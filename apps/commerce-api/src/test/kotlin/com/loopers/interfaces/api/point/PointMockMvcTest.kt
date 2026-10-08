@@ -1,7 +1,7 @@
 package com.loopers.interfaces.api.point
 
 import com.loopers.infrastructure.point.PointAccountJpaRepository
-import com.loopers.infrastructure.user.UserJpaEntity
+import com.loopers.application.user.UserInitializationService
 import com.loopers.infrastructure.user.UserJpaRepository
 import com.loopers.utils.DatabaseCleanUp
 import jakarta.persistence.EntityManager
@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 class PointMockMvcTest @Autowired constructor(
     private val mvc: MockMvc,
     private val users: UserJpaRepository,
+    private val initialization: UserInitializationService,
     private val accounts: PointAccountJpaRepository,
     private val entityManager: EntityManager,
     private val cleanUp: DatabaseCleanUp,
@@ -31,8 +32,8 @@ class PointMockMvcTest @Autowired constructor(
     fun clean() = cleanUp.truncateAllTables()
 
     @Test
-    fun `new user has zero balance before account is created`() {
-        val user = users.save(UserJpaEntity("구매자"))
+    fun `new user has a zero balance account`() {
+        val user = initialization.create("구매자")
         mvc.perform(get("/api/v1/points").header("X-USER-ID", user.id))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.balance").value(0))
@@ -40,12 +41,12 @@ class PointMockMvcTest @Autowired constructor(
             post("/api/v1/points/charge").header("X-USER-ID", user.id).contentType(MediaType.APPLICATION_JSON)
                 .content("""{"amount":0}"""),
         ).andExpect(status().isBadRequest)
-        assertThat(accounts.findById(user.id)).isEmpty()
+        assertThat(accounts.findById(user.id).orElseThrow().balance).isZero()
     }
 
     @Test
     fun `charge persists balance and rejects invalid amount`() {
-        val user = users.save(UserJpaEntity("구매자"))
+        val user = initialization.create("구매자")
         mvc.perform(
             post("/api/v1/points/charge").header("X-USER-ID", user.id).contentType(MediaType.APPLICATION_JSON)
             .content("""{"amount":10000}"""),

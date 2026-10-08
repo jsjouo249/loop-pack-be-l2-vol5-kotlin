@@ -11,11 +11,12 @@ import com.loopers.domain.order.OrderLine
 import com.loopers.domain.order.OrderRepository
 import com.loopers.domain.order.OrderStatus
 import com.loopers.domain.order.PaymentResult
-import com.loopers.domain.point.PointAccount
 import com.loopers.domain.point.PointAccountRepository
 import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.user.UserRepository
+import com.loopers.application.transaction.RetryingWriteExecutor
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 
@@ -41,10 +42,12 @@ class OrderApplicationService(
     private val products: ProductRepository,
     private val users: UserRepository,
     private val points: PointAccountRepository,
+    private val writes: RetryingWriteExecutor,
 ) {
     fun create(userId: Long, inputs: List<OrderItemInput>): OrderResult {
         requireUser(userId)
         if (inputs.isEmpty()) throw CommerceException(CommerceFailure.INVALID_REQUEST)
+        // 중복 상품 수량을 합치되 정수 범위를 넘는 요청은 거절하고, 상품 ID 순서를 고정한다.
         val quantities = sortedMapOf<Long, Int>()
         inputs.forEach { input ->
             positiveId(input.productId)
@@ -58,34 +61,35 @@ class OrderApplicationService(
         val found = products.findActiveByIds(quantities.keys).associateBy { it.id }
         if (found.size != quantities.size) throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         val lines = quantities.map { (id, quantity) -> OrderLine(id, quantity, found.getValue(id).price.amount) }
-        return result(orders.save(Order(userId, lines)))
+        return result(orders.create(Order(userId, lines)))
     }
 
-    @Transactional
-    fun confirm(userId: Long, orderId: Long): OrderResult {
+    /** 주문·포인트·상품을 잠근 뒤 전체 조건을 검증하고, 재고·잔액·확정 결과를 함께 저장한다. */
+    fun confirm(userId: Long, orderId: Long): OrderResult = writes.execute("order.confirm") {
         requireUser(userId)
         positiveId(orderId)
-        val order = orders.find(orderId) ?: throw CommerceException(CommerceFailure.ORDER_NOT_FOUND)
+        // 잠금 순서는 주문 → 포인트 계정 → 상품 ID 오름차순이다. Order.items가 상품 ID 순서를 보장한다.
+        val order = orders.findForUpdate(orderId) ?: throw CommerceException(CommerceFailure.ORDER_NOT_FOUND)
         if (order.userId != userId) throw CommerceException(CommerceFailure.ORDER_NOT_OWNED)
         order.assertDraft()
-        val activeProducts = products.findActiveByIds(order.items.map { it.productId }).associateBy { it.id }
+        // 0원 주문도 기존 계정이 필요하며, 누락 계정을 잔액 0으로 간주하거나 자동 생성하지 않는다.
+        val pointAccount = checkNotNull(points.findByUserIdForUpdate(userId)) { "Missing point account: $userId" }
         val orderProducts = order.items.map { item ->
-            activeProducts[item.productId] ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
+            products.findActiveForUpdate(item.productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         }
+        // 주문 생성 이후 삭제·재고 변경을 다시 검증한다. 가격은 주문 생성 시의 스냅샷을 사용한다.
         order.items.zip(orderProducts).forEach { (item, product) -> product.assertCanDecrease(item.quantity) }
-        val savedPointAccount = points.findByUserId(userId)
-        val pointAccount = savedPointAccount ?: PointAccount.open(userId)
         pointAccount.assertCanPay(order.totalAmount.amount)
-        order.items.zip(orderProducts).forEach { (item, product) ->
-            product.decreaseStock(item.quantity)
-        }
-        products.saveAll(orderProducts)
+        // 모든 조건을 확인한 후 변경하며, 뒤 저장이 실패하면 앞서 실행한 SQL까지 함께 롤백한다.
+        order.items.zip(orderProducts).forEach { (item, product) -> product.decreaseStock(item.quantity) }
+        products.saveStockChanges(orderProducts)
         pointAccount.pay(order.totalAmount.amount)
-        if (savedPointAccount != null) points.save(pointAccount)
+        points.saveBalance(pointAccount)
         order.confirm()
-        return result(orders.save(order))
+        result(orders.saveConfirmation(order))
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun getForUser(userId: Long, orderId: Long): OrderResult {
         requireUser(userId)
         positiveId(orderId)
@@ -94,17 +98,20 @@ class OrderApplicationService(
         return result(order)
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun listForUser(userId: Long, page: Int, size: Int): PageResult<OrderResult> {
         requireUser(userId)
         val offset = offset(page, size)
         return pageResult(page, size, orders.count(userId), orders.findPage(userId, offset, size).map(::result))
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun getForAdmin(orderId: Long): OrderResult {
         positiveId(orderId)
         return result(orders.find(orderId) ?: throw CommerceException(CommerceFailure.ORDER_NOT_FOUND))
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun listForAdmin(userId: Long?, page: Int, size: Int): PageResult<OrderResult> {
         if (userId != null) positiveId(userId)
         val offset = offset(page, size)

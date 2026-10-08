@@ -14,6 +14,8 @@ import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.user.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.annotation.Isolation
+import com.loopers.application.transaction.RetryingWriteExecutor
 
 data class LikeResult(val productId: Long, val liked: Boolean, val likeCount: Long)
 
@@ -23,25 +25,23 @@ class ProductLikeApplicationService(
     private val products: ProductRepository,
     private val users: UserRepository,
     private val customerProducts: CustomerProductQueryService,
+    private val writes: RetryingWriteExecutor,
 ) {
-    @Transactional
-    fun like(userId: Long, productId: Long): LikeResult {
+    fun like(userId: Long, productId: Long): LikeResult = writes.execute("product.like") {
         requireUser(userId)
         positiveId(productId)
-        products.findActive(productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
-        if (likes.findByUserAndProduct(userId, productId) == null) likes.save(ProductLike(userId, productId))
-        return LikeResult(productId, true, likes.countByProductId(productId))
+        products.findActiveForUpdate(productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
+        LikeResult(productId, true, likes.createIfAbsent(ProductLike(userId, productId)))
     }
 
-    @Transactional
-    fun unlike(userId: Long, productId: Long): LikeResult {
+    fun unlike(userId: Long, productId: Long): LikeResult = writes.execute("product.unlike") {
         requireUser(userId)
         positiveId(productId)
-        products.findAny(productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
-        likes.deleteByUserAndProduct(userId, productId)
-        return LikeResult(productId, false, likes.countByProductId(productId))
+        products.findAnyForUpdate(productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
+        LikeResult(productId, false, likes.deleteByUserAndProduct(userId, productId))
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun list(userId: Long, pathUserId: Long, page: Int, size: Int): PageResult<CustomerProductResult> {
         positiveId(pathUserId)
         if (userId != pathUserId) throw CommerceException(CommerceFailure.USER_MISMATCH)

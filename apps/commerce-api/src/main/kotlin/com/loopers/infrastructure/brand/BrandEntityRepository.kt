@@ -4,8 +4,18 @@ import com.loopers.domain.commerce.EntityState
 
 data class BrandEntity(val name: String, val state: EntityState)
 
+data class BrandNameChange(val id: Long, val name: String)
+
+data class BrandDeletion(val id: Long, val deletedAt: java.time.ZonedDateTime)
+
 interface BrandEntityRepository {
-    fun save(entity: BrandEntity): BrandEntity
+    fun create(entity: BrandEntity): BrandEntity
+
+    fun findActiveForUpdate(id: Long): BrandEntity?
+
+    fun updateName(change: BrandNameChange): BrandEntity?
+
+    fun markDeleted(change: BrandDeletion)
 
     fun findActive(id: Long): BrandEntity?
 

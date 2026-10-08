@@ -1,8 +1,9 @@
-package com.loopers.domain.example
+package com.loopers.application.example
 
 import com.loopers.infrastructure.example.ExampleJpaRepository
-import com.loopers.support.error.CoreException
-import com.loopers.support.error.ErrorType
+import com.loopers.domain.example.ExampleException
+import com.loopers.domain.example.ExampleModel
+import com.loopers.domain.example.ExampleFailure
 import com.loopers.utils.DatabaseCleanUp
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -15,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class ExampleServiceIntegrationTest @Autowired constructor(
-    private val exampleService: ExampleService,
+class ExampleFacadeIntegrationTest @Autowired constructor(
+    private val exampleFacade: ExampleFacade,
     private val exampleJpaRepository: ExampleJpaRepository,
     private val databaseCleanUp: DatabaseCleanUp,
 ) {
@@ -35,7 +36,7 @@ class ExampleServiceIntegrationTest @Autowired constructor(
             val exampleModel = exampleJpaRepository.save(ExampleModel(name = "예시 제목", description = "예시 설명"))
 
             // act
-            val result = exampleService.getExample(exampleModel.id)
+            val result = exampleFacade.getExample(exampleModel.id)
 
             // assert
             assertAll(
@@ -53,12 +54,12 @@ class ExampleServiceIntegrationTest @Autowired constructor(
             val invalidId = 999L // Assuming this ID does not exist
 
             // act
-            val exception = assertThrows<CoreException> {
-                exampleService.getExample(invalidId)
+            val exception = assertThrows<ExampleException> {
+                exampleFacade.getExample(invalidId)
             }
 
             // assert
-            assertThat(exception.errorType).isEqualTo(ErrorType.NOT_FOUND)
+            assertThat(exception.reason).isEqualTo(ExampleFailure.NOT_FOUND)
         }
     }
 }

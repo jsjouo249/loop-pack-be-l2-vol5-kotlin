@@ -28,6 +28,7 @@ class Product private constructor(
     }
 
     fun changeDetails(name: String, price: Long) {
+        assertActive()
         val newName = normalizedName(name)
         val newPrice = Money(price)
         this.name = newName
@@ -35,16 +36,23 @@ class Product private constructor(
     }
 
     fun adjustStock(finalQuantity: Int) {
+        assertActive()
         if (finalQuantity < 0) throw CommerceException(CommerceFailure.INVALID_STOCK)
         stock = stock.adjustTo(finalQuantity)
     }
 
     fun decreaseStock(quantity: Int) {
+        assertActive()
         stock = stock.decrease(quantity)
     }
 
     fun assertCanDecrease(quantity: Int) {
+        assertActive()
         stock.decrease(quantity)
+    }
+
+    private fun assertActive() {
+        if (deletedAt != null) throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
     }
 
     companion object {

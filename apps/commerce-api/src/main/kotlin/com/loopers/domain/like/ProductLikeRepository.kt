@@ -7,9 +7,10 @@ interface ProductLikeRepository {
 
     fun findByUserAndProduct(userId: Long, productId: Long): ProductLike?
 
-    fun save(like: ProductLike)
+    /** 상품 잠금 뒤 관계를 current read로 확인하고, 신규 관계만 생성한다. 현재 집계값을 반환한다. */
+    fun createIfAbsent(like: ProductLike): Long
 
-    fun deleteByUserAndProduct(userId: Long, productId: Long)
+    fun deleteByUserAndProduct(userId: Long, productId: Long): Long
 
     fun findActivePageByUser(userId: Long, offset: Int, limit: Int): List<ProductLike>
 

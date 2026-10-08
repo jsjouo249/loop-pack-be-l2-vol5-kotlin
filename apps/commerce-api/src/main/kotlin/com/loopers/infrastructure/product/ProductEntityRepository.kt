@@ -11,10 +11,30 @@ data class ProductEntity(
     val state: EntityState,
 )
 
-interface ProductEntityRepository {
-    fun save(entity: ProductEntity): ProductEntity
+data class ProductDetailsChange(val id: Long, val name: String, val price: Long)
 
-    fun saveAll(entities: Collection<ProductEntity>)
+data class ProductStockChange(val id: Long, val stock: Int)
+
+data class ProductDeletion(val id: Long, val deletedAt: java.time.ZonedDateTime)
+
+interface ProductEntityRepository {
+    fun create(entity: ProductEntity): ProductEntity
+
+    fun findActiveForUpdate(id: Long): ProductEntity?
+
+    fun findAnyForUpdate(id: Long): ProductEntity?
+
+    fun findActiveIdsByBrandId(brandId: Long): List<Long>
+
+    fun updateDetails(change: ProductDetailsChange): ProductEntity?
+
+    fun setStock(change: ProductStockChange): ProductEntity?
+
+    fun saveStockChanges(changes: Collection<ProductStockChange>)
+
+    fun markDeleted(change: ProductDeletion): Boolean
+
+    fun markDeletedAll(changes: Collection<ProductDeletion>)
 
     fun findActive(id: Long): ProductEntity?
 

@@ -1,0 +1,328 @@
+{
+  "date": "2026-09-26",
+  "baseCommit": "928d17dd5608fb157b4c9f22a7d1d472ff508514",
+  "command": ":apps:commerce-api:ktlintCheck :apps:commerce-api:check",
+  "exitCode": 0,
+  "totals": {
+    "tests": 111,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "orderCompetitionCounts": {
+    "attempt:SUCCESS": 15,
+    "request:SUCCESS": 15,
+    "attempt:BUSINESS_REJECTION": 7,
+    "request:BUSINESS_REJECTION": 7
+  },
+  "suites": [
+    {
+      "suite": "com.loopers.CommerceApiContextTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.application.transaction.AdministrativeConcurrencyTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "REQUEST_OUTCOMES [RequestOutcome(id=details, outcome=SUCCESS), RequestOutcome(id=delete, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=41a83fad-2685-45b9-8c43-f04d4a8fc070, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=41a83fad-2685-45b9-8c43-f04d4a8fc070, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=13e0b4f5-5965-4c7e-89f3-5212665eca81, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=13e0b4f5-5965-4c7e-89f3-5212665eca81, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=9576b7dc-e3a6-4b78-b4f2-f1631c48d7c5, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=9576b7dc-e3a6-4b78-b4f2-f1631c48d7c5, operation=product.delete, attempt=1, outcome=SUCCESS)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=details, outcome=SUCCESS), RequestOutcome(id=confirm, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=a64f6938-5cd3-4bf2-abf4-306ddb63a1f1, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a64f6938-5cd3-4bf2-abf4-306ddb63a1f1, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=ecc3d1ee-20b6-4ac3-803f-5a95f7663602, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=ecc3d1ee-20b6-4ac3-803f-5a95f7663602, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=98843fba-5c9e-4a47-8a72-5551c7e3efd5, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=98843fba-5c9e-4a47-8a72-5551c7e3efd5, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=a35e3d4e-eaeb-43a1-9976-457d43bd723d, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a35e3d4e-eaeb-43a1-9976-457d43bd723d, operation=order.confirm, attempt=1, outcome=SUCCESS)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=set, outcome=SUCCESS), RequestOutcome(id=confirm, outcome=SUCCESS)]",
+        "FINAL_DB adminStock=9 balance=9000",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=7da120f4-662b-4675-9b86-fdcd27d62cb6, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=7da120f4-662b-4675-9b86-fdcd27d62cb6, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=599a40c8-b539-49e6-b529-1a2ba4b9cc3a, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=599a40c8-b539-49e6-b529-1a2ba4b9cc3a, operation=order.confirm, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=cf11e31b-19ae-46b7-95ec-b9f3b7f6ddcd, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=cf11e31b-19ae-46b7-95ec-b9f3b7f6ddcd, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=27b191b7-0372-4bb2-b157-a513e3231786, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=27b191b7-0372-4bb2-b157-a513e3231786, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=92e80635-5d03-4dc8-90f4-5aa49a19c56f, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=92e80635-5d03-4dc8-90f4-5aa49a19c56f, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=d5465dd6-dc20-49ff-85d5-8f7531d9022c, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=d5465dd6-dc20-49ff-85d5-8f7531d9022c, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=c0ff10bf-2105-4645-8512-9e4c80b2cfdf, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=c0ff10bf-2105-4645-8512-9e4c80b2cfdf, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=01aadbe2-3f3a-4efb-8665-ccd52a4d3946, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=01aadbe2-3f3a-4efb-8665-ccd52a4d3946, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=bc548cb0-53e3-4542-857b-dc4089b35cac, operation=product.details, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=bc548cb0-53e3-4542-857b-dc4089b35cac, operation=product.details, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=4afd7072-a601-4339-820b-f277403d248a, operation=product.stock, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=4afd7072-a601-4339-820b-f277403d248a, operation=product.stock, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=0244038c-d902-47cf-b011-83bbc101e1d0, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=0244038c-d902-47cf-b011-83bbc101e1d0, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=0edc5ad0-c6d9-4f11-bb87-a7a243a4b6ef, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=0edc5ad0-c6d9-4f11-bb87-a7a243a4b6ef, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=5d239b91-74d6-41db-8fe4-22652dd7e631, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=5d239b91-74d6-41db-8fe4-22652dd7e631, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=d82fb78c-df84-40c6-94ac-799a6ce9a0e6, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=d82fb78c-df84-40c6-94ac-799a6ce9a0e6, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=6ab67cf1-6b93-4fbb-8150-391ec7d9423e, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=6ab67cf1-6b93-4fbb-8150-391ec7d9423e, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=a3f41cd8-c4e4-437c-9bc7-183d31464965, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a3f41cd8-c4e4-437c-9bc7-183d31464965, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=95595187-4b06-456c-9e2e-0e10e20a13bc, operation=product.details, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=95595187-4b06-456c-9e2e-0e10e20a13bc, operation=product.details, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=a46a9e39-35f8-4b92-8046-6132b14d3c79, operation=product.stock, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=a46a9e39-35f8-4b92-8046-6132b14d3c79, operation=product.stock, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=289e7fe7-5f50-4e7a-9dc8-f49f2a642084, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=289e7fe7-5f50-4e7a-9dc8-f49f2a642084, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=8278f4a2-f71c-4b57-a5cd-5ea09b935173, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=8278f4a2-f71c-4b57-a5cd-5ea09b935173, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=e2611bce-9d9d-4b57-8488-6075d71c16e9, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=e2611bce-9d9d-4b57-8488-6075d71c16e9, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=d815a462-96b7-4807-ad95-424fe5878ee0, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=d815a462-96b7-4807-ad95-424fe5878ee0, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=delete, outcome=SUCCESS), RequestOutcome(id=confirm, outcome=PRODUCT_NOT_FOUND)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=60aec76c-e658-4f51-93bf-26071c3d985a, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=60aec76c-e658-4f51-93bf-26071c3d985a, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=70112a70-31d4-42be-b794-cedab4967075, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=70112a70-31d4-42be-b794-cedab4967075, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=2eaf0eef-3a08-422a-9c99-64096d1fac85, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=2eaf0eef-3a08-422a-9c99-64096d1fac85, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=f699c1ae-f438-4ddc-84cd-dab13a0ddd91, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=f699c1ae-f438-4ddc-84cd-dab13a0ddd91, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=rename, outcome=BRAND_NOT_FOUND), RequestOutcome(id=delete, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=402ff458-90da-4a9f-b17a-c1258e293925, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=402ff458-90da-4a9f-b17a-c1258e293925, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=2cf10e65-849e-40e0-8a7b-83a0cd1f330a, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=d3104a68-f7ba-4e58-b4cf-8378ca370067, operation=brand.rename, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=2cf10e65-849e-40e0-8a7b-83a0cd1f330a, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=d3104a68-f7ba-4e58-b4cf-8378ca370067, operation=brand.rename, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=a131ac5b-b70e-4694-b7e5-af67bb1cef50, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a131ac5b-b70e-4694-b7e5-af67bb1cef50, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=23c3635c-610d-4e16-a802-cbba9ff521f9, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=23c3635c-610d-4e16-a802-cbba9ff521f9, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=a847e393-4747-483c-afe3-795f2f5a05dd, operation=product.create, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=a847e393-4747-483c-afe3-795f2f5a05dd, operation=product.create, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=register, outcome=SUCCESS), RequestOutcome(id=delete, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=054e6d9f-b61e-4fbf-9f28-57d1a41c6e35, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=054e6d9f-b61e-4fbf-9f28-57d1a41c6e35, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=445f24fb-d8c1-4afc-9115-dbc6c2d4f39b, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=445f24fb-d8c1-4afc-9115-dbc6c2d4f39b, operation=brand.delete, attempt=1, outcome=SUCCESS)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.AggregateCoordinationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.application.transaction.BrandDeletionHttpTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=97fbad99-3116-4878-94dc-bb3b992af176, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=97fbad99-3116-4878-94dc-bb3b992af176, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=c494eea5-d373-4c2f-8bc2-8d259fa9563a, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=c494eea5-d373-4c2f-8bc2-8d259fa9563a, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=e9c8e9a2-834d-473b-8542-7cb88b9ba2f0, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=e9c8e9a2-834d-473b-8542-7cb88b9ba2f0, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=bb98d878-fac1-410c-a47f-8ed5525972c3, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=bb98d878-fac1-410c-a47f-8ed5525972c3, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=3f63390c-ee80-4ab7-b3c7-c8984ff2f34e, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=3f63390c-ee80-4ab7-b3c7-c8984ff2f34e, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=3e4cd8aa-7c8b-44d3-81aa-0187e1e06988, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=3e4cd8aa-7c8b-44d3-81aa-0187e1e06988, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=6e08dd2b-043f-4a2c-8b2c-e1ae7418800d, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=6e08dd2b-043f-4a2c-8b2c-e1ae7418800d, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=625310ce-8242-4285-8faf-914e3936a9d6, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=625310ce-8242-4285-8faf-914e3936a9d6, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=e0299132-d95d-4bbd-96d3-4af77095f7ad, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=e0299132-d95d-4bbd-96d3-4af77095f7ad, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=b0efb0fd-ee12-4132-8e42-59ebaf4e409e, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=b0efb0fd-ee12-4132-8e42-59ebaf4e409e, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=dcb6b67b-75ce-448d-8771-aa4d21722190, operation=product.details, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=dcb6b67b-75ce-448d-8771-aa4d21722190, operation=product.details, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=6c59cef3-f669-4e4b-9db3-3e1f50eb63da, operation=product.stock, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=6c59cef3-f669-4e4b-9db3-3e1f50eb63da, operation=product.stock, attempt=1, outcome=BUSINESS_REJECTION)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.BrandRemovalTransactionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.application.transaction.LostUpdateControlTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "REQUEST_OUTCOMES [RequestOutcome(id=control-1, outcome=SUCCESS), RequestOutcome(id=control-2, outcome=SUCCESS)]",
+        "FINAL_DB controlSuccess=2 stock=4 invariant=VIOLATED",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=09e144f3-09cd-4c17-892c-92ff04069d4b, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=09e144f3-09cd-4c17-892c-92ff04069d4b, operation=product.create, attempt=1, outcome=SUCCESS)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.MySqlTransactionPolicyTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=e67f9eaa-d2a0-4124-a817-567128f75ebe, operation=point.charge, attempt=1, outcome=UNKNOWN_COMPLETION), WriteObservation(kind=request, requestId=e67f9eaa-d2a0-4124-a817-567128f75ebe, operation=point.charge, attempt=1, outcome=TECHNICAL_FAILURE)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=c7f5d9bb-b951-4919-8779-4f35721a26f9, operation=order.confirm, attempt=1, outcome=DEADLOCK), WriteObservation(kind=attempt, requestId=c7f5d9bb-b951-4919-8779-4f35721a26f9, operation=order.confirm, attempt=2, outcome=SUCCESS), WriteObservation(kind=request, requestId=c7f5d9bb-b951-4919-8779-4f35721a26f9, operation=order.confirm, attempt=2, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=3a753a36-c451-4802-b9e5-652ed9bc6408, operation=order.confirm, attempt=1, outcome=LOCK_TIMEOUT), WriteObservation(kind=request, requestId=3a753a36-c451-4802-b9e5-652ed9bc6408, operation=order.confirm, attempt=1, outcome=TECHNICAL_FAILURE)]",
+        "MYSQL_RUNTIME version=8.0.46 driver=mysql-connector-j-9.1.0 (Revision: cf2917ea44ae2e43a4514a33771035aa99de73bf) lockWait=2",
+        "MYSQL_RUNTIME version=8.0.46 driver=mysql-connector-j-9.1.0 (Revision: cf2917ea44ae2e43a4514a33771035aa99de73bf) lockWait=2",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=edc8ea80-842c-4da3-b49d-76a9e5c6aba2, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=edc8ea80-842c-4da3-b49d-76a9e5c6aba2, operation=product.create, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=1506d217-b8d4-49ea-a560-bbe81e46050a, operation=order.confirm, attempt=1, outcome=DEADLOCK), WriteObservation(kind=attempt, requestId=1506d217-b8d4-49ea-a560-bbe81e46050a, operation=order.confirm, attempt=2, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=1506d217-b8d4-49ea-a560-bbe81e46050a, operation=order.confirm, attempt=2, outcome=BUSINESS_REJECTION)]",
+        "TRANSACTION_TIMEOUT elapsedMs=5185 exception=org.springframework.orm.jpa.JpaSystemException",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=7af84981-3433-4311-b447-df0d36a73a37, operation=timeout.probe, attempt=1, outcome=UNKNOWN_COMPLETION), WriteObservation(kind=request, requestId=7af84981-3433-4311-b447-df0d36a73a37, operation=timeout.probe, attempt=1, outcome=TECHNICAL_FAILURE)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=58be7650-d45f-4600-8a38-d4ae8b1bac37, operation=brand.delete, attempt=1, outcome=DEADLOCK), WriteObservation(kind=attempt, requestId=58be7650-d45f-4600-8a38-d4ae8b1bac37, operation=brand.delete, attempt=2, outcome=SUCCESS), WriteObservation(kind=request, requestId=58be7650-d45f-4600-8a38-d4ae8b1bac37, operation=brand.delete, attempt=2, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=c1142122-e41d-44e2-8a91-b4ffba64eee2, operation=point.charge, attempt=1, outcome=DEADLOCK), WriteObservation(kind=attempt, requestId=c1142122-e41d-44e2-8a91-b4ffba64eee2, operation=point.charge, attempt=2, outcome=SUCCESS), WriteObservation(kind=request, requestId=c1142122-e41d-44e2-8a91-b4ffba64eee2, operation=point.charge, attempt=2, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=bc4b6f3d-82cf-49e2-9864-4367575c1cbe, operation=point.charge, attempt=1, outcome=DEADLOCK), WriteObservation(kind=attempt, requestId=bc4b6f3d-82cf-49e2-9864-4367575c1cbe, operation=point.charge, attempt=2, outcome=DEADLOCK), WriteObservation(kind=request, requestId=bc4b6f3d-82cf-49e2-9864-4367575c1cbe, operation=point.charge, attempt=2, outcome=TECHNICAL_FAILURE)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.OrderConcurrencyTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "REQUEST_OUTCOMES [RequestOutcome(id=charge-1, outcome=SUCCESS), RequestOutcome(id=charge-2, outcome=SUCCESS), RequestOutcome(id=charge-3, outcome=SUCCESS), RequestOutcome(id=charge-4, outcome=SUCCESS), RequestOutcome(id=charge-5, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=38e7c472-69be-4f24-a050-1141a4a725ca, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=38e7c472-69be-4f24-a050-1141a4a725ca, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=91bff0ae-59b1-4438-8ac1-9bbe9b27ddcb, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=91bff0ae-59b1-4438-8ac1-9bbe9b27ddcb, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=bfed1dd5-afb8-47ba-9189-7ff47253af41, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=bfed1dd5-afb8-47ba-9189-7ff47253af41, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=78d230e8-d53a-4ccf-a760-52b92ede54d1, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=78d230e8-d53a-4ccf-a760-52b92ede54d1, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=d426d2e5-85a8-4b04-ac9b-52b9a061c591, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=d426d2e5-85a8-4b04-ac9b-52b9a061c591, operation=point.charge, attempt=1, outcome=SUCCESS)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=1, outcome=SUCCESS), RequestOutcome(id=2, outcome=SUCCESS), RequestOutcome(id=3, outcome=INSUFFICIENT_POINTS)]",
+        "FINAL_DB balance=2000 stock=8 confirmed=2 draft=1",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=ff2729b7-ae92-4758-8430-3c258c4ed2e2, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=ff2729b7-ae92-4758-8430-3c258c4ed2e2, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=177583a9-ac00-499f-8306-8f95ea2d0daa, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=177583a9-ac00-499f-8306-8f95ea2d0daa, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=f9ac15d7-e8e3-44b7-a098-6d56a2aa4ac6, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=f9ac15d7-e8e3-44b7-a098-6d56a2aa4ac6, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=1, outcome=INSUFFICIENT_STOCK), RequestOutcome(id=2, outcome=SUCCESS), RequestOutcome(id=3, outcome=SUCCESS), RequestOutcome(id=4, outcome=SUCCESS), RequestOutcome(id=5, outcome=INSUFFICIENT_STOCK), RequestOutcome(id=6, outcome=INSUFFICIENT_STOCK), RequestOutcome(id=7, outcome=SUCCESS), RequestOutcome(id=8, outcome=SUCCESS)]",
+        "FINAL_DB stock=0 confirmed=5 draft=3 totalBalance=75000",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=6c8276ee-5079-4249-bc48-3eaae5ca2724, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=6c8276ee-5079-4249-bc48-3eaae5ca2724, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=2fbd6025-699b-45a7-b9eb-c74f798d0728, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=2fbd6025-699b-45a7-b9eb-c74f798d0728, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=a0afa377-2dc8-4d80-b58e-fe9b70e4c613, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a0afa377-2dc8-4d80-b58e-fe9b70e4c613, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=2b252ce0-1753-48be-864c-336c2024985b, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=2b252ce0-1753-48be-864c-336c2024985b, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=3f47845a-47da-4b6c-a323-b2aa25a18928, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=3f47845a-47da-4b6c-a323-b2aa25a18928, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=ad0537a4-19bc-4cb2-aa35-6ea4192d411e, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=ad0537a4-19bc-4cb2-aa35-6ea4192d411e, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=01bb9ace-d583-44d6-b8ab-7bf5186de36a, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=01bb9ace-d583-44d6-b8ab-7bf5186de36a, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=01f658a2-5753-4766-8634-416f273f6fa9, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=01f658a2-5753-4766-8634-416f273f6fa9, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=charge, outcome=SUCCESS), RequestOutcome(id=1, outcome=SUCCESS)]",
+        "FINAL_DB balance=5000 stock=0",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=a48f1268-88a6-43e1-b176-26560108c4ac, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a48f1268-88a6-43e1-b176-26560108c4ac, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=44e2e328-b90b-4bd7-9639-5a139449375b, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=44e2e328-b90b-4bd7-9639-5a139449375b, operation=order.confirm, attempt=1, outcome=SUCCESS)]",
+        "REQUEST_OUTCOMES [RequestOutcome(id=1-request-1, outcome=SUCCESS), RequestOutcome(id=1-request-2, outcome=ORDER_ALREADY_CONFIRMED), RequestOutcome(id=1-request-3, outcome=ORDER_ALREADY_CONFIRMED), RequestOutcome(id=1-request-4, outcome=ORDER_ALREADY_CONFIRMED)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=1bfa6e6f-d316-42f9-be8a-55158ddf010e, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=1bfa6e6f-d316-42f9-be8a-55158ddf010e, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=5787eab6-9adc-424c-af69-658a78aae766, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=5787eab6-9adc-424c-af69-658a78aae766, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=4e013626-0a1f-4759-bf9e-03c0ac0e5f24, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=4e013626-0a1f-4759-bf9e-03c0ac0e5f24, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=attempt, requestId=58beb8b3-b249-41f2-9041-01ecb3651fb7, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION), WriteObservation(kind=request, requestId=58beb8b3-b249-41f2-9041-01ecb3651fb7, operation=order.confirm, attempt=1, outcome=BUSINESS_REJECTION)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.PartialStorageTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=89a27b0f-b82c-4812-aac6-505eae107262, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=89a27b0f-b82c-4812-aac6-505eae107262, operation=product.create, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=3ddd606c-4040-4e20-84c1-938dd4d4d31c, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=3ddd606c-4040-4e20-84c1-938dd4d4d31c, operation=product.create, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=30777c0e-c622-4a18-8129-597b52b5b534, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=30777c0e-c622-4a18-8129-597b52b5b534, operation=product.create, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=291c826e-0c5b-4b34-b583-335ce1f23c49, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=291c826e-0c5b-4b34-b583-335ce1f23c49, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=8a90b958-37d2-4845-8ee2-f8f95531350b, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=8a90b958-37d2-4845-8ee2-f8f95531350b, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=e93cf1a2-576c-460c-8d27-d45bb070e1a5, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=e93cf1a2-576c-460c-8d27-d45bb070e1a5, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=4e85232c-25d2-46ef-84be-4290024091ca, operation=brand.rename, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=4e85232c-25d2-46ef-84be-4290024091ca, operation=brand.rename, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=a61a6fdc-6484-4e28-8fff-0c0f7b692037, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a61a6fdc-6484-4e28-8fff-0c0f7b692037, operation=product.details, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=21e6d186-76b7-45d4-8d67-e73922194b5d, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=21e6d186-76b7-45d4-8d67-e73922194b5d, operation=product.create, attempt=1, outcome=SUCCESS)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.PointInitializationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "WRITE_OBSERVATIONS []",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=9893fc6a-7ecf-49e0-9530-d5085274b771, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=9893fc6a-7ecf-49e0-9530-d5085274b771, operation=point.charge, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=246294ca-a4c4-4957-97fa-27a67d15313a, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=246294ca-a4c4-4957-97fa-27a67d15313a, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=dd1438c9-223b-4f49-9716-004260d24074, operation=point.charge, attempt=1, outcome=TECHNICAL_FAILURE), WriteObservation(kind=request, requestId=dd1438c9-223b-4f49-9716-004260d24074, operation=point.charge, attempt=1, outcome=TECHNICAL_FAILURE), WriteObservation(kind=attempt, requestId=86b0c71d-c969-4d7e-a216-f184095f9440, operation=order.confirm, attempt=1, outcome=TECHNICAL_FAILURE), WriteObservation(kind=request, requestId=86b0c71d-c969-4d7e-a216-f184095f9440, operation=order.confirm, attempt=1, outcome=TECHNICAL_FAILURE)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=31e08f12-3e89-4278-9dde-528c4bbec368, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=31e08f12-3e89-4278-9dde-528c4bbec368, operation=point.charge, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=22e7ce77-7981-4dc0-bd6f-9d765fc90024, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=22e7ce77-7981-4dc0-bd6f-9d765fc90024, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=bcf60591-ce86-4619-ac3a-e02816d398b9, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=bcf60591-ce86-4619-ac3a-e02816d398b9, operation=order.confirm, attempt=1, outcome=SUCCESS)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.application.transaction.SqlContractTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "CONFIRMATION_SQL update orders set status = ?, payment_amount = ?, payment_result = ?, confirmed_at = ?, updated_at = current_timestamp(6) where id = ? and status = 'draft'",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=b240567d-5044-4a81-9316-f892d9c130e1, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=b240567d-5044-4a81-9316-f892d9c130e1, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=2e1b9842-ba8e-4a03-bb17-259260e16454, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=2e1b9842-ba8e-4a03-bb17-259260e16454, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=9c2655bc-66dc-4ca4-8997-95e8a873a478, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=9c2655bc-66dc-4ca4-8997-95e8a873a478, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=4d42d500-1523-421d-ab55-8ac33946b594, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=4d42d500-1523-421d-ab55-8ac33946b594, operation=order.confirm, attempt=1, outcome=SUCCESS)]",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=b167a1d8-4851-4253-9d14-2431f1f21a1f, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=b167a1d8-4851-4253-9d14-2431f1f21a1f, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=ec8606c8-9529-4830-ad63-b1e030efdeef, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=ec8606c8-9529-4830-ad63-b1e030efdeef, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=bd930233-4fe3-4cd4-87e6-45051057285e, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=bd930233-4fe3-4cd4-87e6-45051057285e, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=2c60eab8-7a8c-4a95-8b0a-41e4dea16906, operation=brand.rename, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=2c60eab8-7a8c-4a95-8b0a-41e4dea16906, operation=brand.rename, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=1be18ddb-526a-4cd2-a5e7-f79ac7922c58, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=1be18ddb-526a-4cd2-a5e7-f79ac7922c58, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=65cb06b4-b8da-4a53-87be-ee456745d759, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=65cb06b4-b8da-4a53-87be-ee456745d759, operation=order.confirm, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=b768c243-9f63-44c7-9ed6-cfcf04dfbfb7, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=b768c243-9f63-44c7-9ed6-cfcf04dfbfb7, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=d91b9ec1-fba3-40c3-88a1-5cfa129b4ae5, operation=brand.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=d91b9ec1-fba3-40c3-88a1-5cfa129b4ae5, operation=brand.delete, attempt=1, outcome=SUCCESS)]",
+        "PARTIAL_SQL update products set updated_at = if(binary name <> binary ? or price <> ?, current_timestamp(6), updated_at), name = ?, price = ? where id = ? and deleted_at is null",
+        "PARTIAL_SQL update products set updated_at = if(stock <> ?, current_timestamp(6), updated_at), stock = ? where id = ? and deleted_at is null",
+        "PARTIAL_SQL update brands set updated_at = if(binary name <> binary ?, current_timestamp(6), updated_at), name = ? where id = ? and deleted_at is null",
+        "PARTIAL_SQL update products set deleted_at = ?, updated_at = current_timestamp(6) where id = ? and deleted_at is null",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=91bcb0db-c4ad-4975-a047-a2391899a1d9, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=91bcb0db-c4ad-4975-a047-a2391899a1d9, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=8e2e9e10-54e7-4777-a323-25432ae23c7e, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=8e2e9e10-54e7-4777-a323-25432ae23c7e, operation=product.details, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=a2d7fd8c-6b66-4232-b6fd-2ab9ae4569ce, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=a2d7fd8c-6b66-4232-b6fd-2ab9ae4569ce, operation=product.stock, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=998cef96-d54b-4209-b601-9d6291e83de8, operation=brand.rename, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=998cef96-d54b-4209-b601-9d6291e83de8, operation=brand.rename, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=97309b7c-3c37-4cf5-8433-b0ea3783eee6, operation=product.delete, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=97309b7c-3c37-4cf5-8433-b0ea3783eee6, operation=product.delete, attempt=1, outcome=SUCCESS)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.application.transaction.WriteRollbackTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "evidence": [
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=6a1a87f8-1987-4a51-aaa6-eb2a2ab0db51, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=6a1a87f8-1987-4a51-aaa6-eb2a2ab0db51, operation=point.charge, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=292a369f-6f4a-4fc2-ba17-04239b20df35, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=292a369f-6f4a-4fc2-ba17-04239b20df35, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=8a5223ab-5a31-496b-adc3-8fc4c0835266, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=8a5223ab-5a31-496b-adc3-8fc4c0835266, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=1d8243e8-2c40-4f4c-a8d6-796cfdf262de, operation=order.confirm, attempt=1, outcome=TECHNICAL_FAILURE), WriteObservation(kind=request, requestId=1d8243e8-2c40-4f4c-a8d6-796cfdf262de, operation=order.confirm, attempt=1, outcome=TECHNICAL_FAILURE)]",
+        "WRITE_OBSERVATIONS []",
+        "WRITE_OBSERVATIONS [WriteObservation(kind=attempt, requestId=09709077-73e9-4dbc-bee5-48f67b026934, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=09709077-73e9-4dbc-bee5-48f67b026934, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=7c173e50-a7ea-476d-bad7-5482ada7c0ec, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=7c173e50-a7ea-476d-bad7-5482ada7c0ec, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=1a6f245e-1da1-43cf-9643-91a3c0cc3b16, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=request, requestId=1a6f245e-1da1-43cf-9643-91a3c0cc3b16, operation=product.create, attempt=1, outcome=SUCCESS), WriteObservation(kind=attempt, requestId=25265681-3f2a-42d0-b3f0-4cabd8029c51, operation=brand.delete, attempt=1, outcome=TECHNICAL_FAILURE), WriteObservation(kind=request, requestId=25265681-3f2a-42d0-b3f0-4cabd8029c51, operation=brand.delete, attempt=1, outcome=TECHNICAL_FAILURE)]"
+      ]
+    },
+    {
+      "suite": "com.loopers.architecture.ArchitectureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.domain.brand.BrandTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "예시 모델을 생성할 때,",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "예시를 조회할 때,",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.domain.example.ExampleServiceIntegrationTest",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.domain.order.OrderTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.domain.point.PointAccountTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.domain.product.ProductTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.domain.product.StockTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.infrastructure.CommerceSchemaTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.ContractClassificationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "GET /api/v1/examples/{id}",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.ExampleV1ApiE2ETest",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.admin.AdminCommerceMockMvcTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.like.ProductLikeMockMvcTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.order.OrderMockMvcTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.point.PointMockMvcTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.interfaces.api.product.CustomerBrowseMockMvcTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "com.loopers.support.error.CoreExceptionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

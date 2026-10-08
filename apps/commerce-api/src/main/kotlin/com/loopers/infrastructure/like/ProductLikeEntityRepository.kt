@@ -16,9 +16,9 @@ interface ProductLikeEntityRepository {
 
     fun findByUserAndProduct(userId: Long, productId: Long): ProductLikeEntity?
 
-    fun save(entity: ProductLikeEntity)
+    fun createIfAbsent(entity: ProductLikeEntity): Long
 
-    fun deleteByUserAndProduct(userId: Long, productId: Long)
+    fun deleteByUserAndProduct(userId: Long, productId: Long): Long
 
     fun findActivePageByUser(userId: Long, offset: Int, limit: Int): List<ProductLikeEntity>
 

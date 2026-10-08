@@ -1,9 +1,23 @@
 package com.loopers.domain.product
 
 interface ProductRepository {
-    fun save(product: Product): Product
+    fun create(product: Product): Product
 
-    fun saveAll(products: Collection<Product>)
+    fun findActiveForUpdate(id: Long): Product?
+
+    fun findAnyForUpdate(id: Long): Product?
+
+    fun findActiveIdsByBrandId(brandId: Long): List<Long>
+
+    fun updateDetails(product: Product): Product?
+
+    fun setStock(product: Product): Product?
+
+    fun saveStockChanges(products: Collection<Product>)
+
+    fun markDeleted(product: Product): Boolean
+
+    fun markDeletedAll(products: Collection<Product>)
 
     fun findActive(id: Long): Product?
 

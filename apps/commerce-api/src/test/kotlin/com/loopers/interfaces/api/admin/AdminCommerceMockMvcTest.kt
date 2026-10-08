@@ -5,7 +5,7 @@ import com.loopers.infrastructure.brand.BrandJpaRepository
 import com.loopers.infrastructure.product.ProductJpaEntity
 import com.loopers.infrastructure.product.ProductJpaRepository
 import com.loopers.infrastructure.point.PointAccountJpaRepository
-import com.loopers.infrastructure.user.UserJpaEntity
+import com.loopers.application.user.UserInitializationService
 import com.loopers.infrastructure.user.UserJpaRepository
 import com.loopers.utils.DatabaseCleanUp
 import jakarta.persistence.EntityManager
@@ -35,6 +35,7 @@ class AdminCommerceMockMvcTest @Autowired constructor(
     private val brands: BrandJpaRepository,
     private val products: ProductJpaRepository,
     private val users: UserJpaRepository,
+    private val initialization: UserInitializationService,
     private val accounts: PointAccountJpaRepository,
     private val entityManager: EntityManager,
     private val entityManagerFactory: EntityManagerFactory,
@@ -45,10 +46,10 @@ class AdminCommerceMockMvcTest @Autowired constructor(
 
     @Test
     fun `user fixture and brand product CRUD persist through HTTP`() {
-        val fixtureUser = users.saveAndFlush(UserJpaEntity("구매자"))
+        val fixtureUser = initialization.create("구매자")
         entityManager.clear()
         assertThat(users.findById(fixtureUser.id)).isPresent()
-        assertThat(accounts.findById(fixtureUser.id)).isEmpty()
+        assertThat(accounts.findById(fixtureUser.id).orElseThrow().balance).isZero()
 
         mvc.perform(post("/api-admin/v1/brands").with(user("admin").roles("ADMIN")).with(csrf()).contentType(MediaType.APPLICATION_JSON).content("""{"name":"  브랜드  "}"""))
             .andExpect(status().isCreated)
@@ -78,9 +79,6 @@ class AdminCommerceMockMvcTest @Autowired constructor(
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.content[0].brand.name").value("수정 브랜드"))
 
-        mvc.perform(delete("/api-admin/v1/brands/${brand.id}").with(user("admin").roles("ADMIN")).with(csrf()))
-            .andExpect(status().isConflict)
-            .andExpect(jsonPath("$.meta.errorCode").value("BRAND_HAS_ACTIVE_PRODUCTS"))
         mvc.perform(
             put("/api-admin/v1/products/${product.id}").with(user("admin").roles("ADMIN")).with(csrf()).contentType(MediaType.APPLICATION_JSON)
             .content("""{"name":"수정 상품","price":6000}"""),
@@ -98,9 +96,6 @@ class AdminCommerceMockMvcTest @Autowired constructor(
         )
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.stock").value(0))
-        mvc.perform(delete("/api-admin/v1/brands/${brand.id}").with(user("admin").roles("ADMIN")).with(csrf()))
-            .andExpect(status().isConflict)
-            .andExpect(jsonPath("$.meta.errorCode").value("BRAND_HAS_ACTIVE_PRODUCTS"))
         entityManager.clear()
         assertThat(brands.findById(brand.id).orElseThrow().deletedAt).isNull()
         mvc.perform(get("/api-admin/v1/products/${product.id}").with(user("admin").roles("ADMIN")))

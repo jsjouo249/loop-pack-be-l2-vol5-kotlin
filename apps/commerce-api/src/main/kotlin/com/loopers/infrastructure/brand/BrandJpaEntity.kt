@@ -14,9 +14,4 @@ class BrandJpaEntity(
     var name: String,
 ) : BaseEntity() {
     fun toEntity(): BrandEntity = BrandEntity(name, EntityState(id, createdAt, updatedAt, deletedAt))
-
-    fun updateFrom(entity: BrandEntity) {
-        name = entity.name
-        deletedAt = entity.state.deletedAt
-    }
 }

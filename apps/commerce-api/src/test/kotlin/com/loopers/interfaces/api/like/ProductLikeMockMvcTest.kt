@@ -2,11 +2,13 @@ package com.loopers.interfaces.api.like
 
 import com.loopers.infrastructure.brand.BrandJpaEntity
 import com.loopers.infrastructure.brand.BrandJpaRepository
-import com.loopers.infrastructure.like.ProductLikeJpaEntity
+import com.loopers.domain.like.ProductLike
+import com.loopers.domain.like.ProductLikeRepository
+import com.loopers.domain.product.ProductRepository
 import com.loopers.infrastructure.like.ProductLikeJpaRepository
 import com.loopers.infrastructure.product.ProductJpaEntity
 import com.loopers.infrastructure.product.ProductJpaRepository
-import com.loopers.infrastructure.user.UserJpaEntity
+import com.loopers.application.user.UserInitializationService
 import com.loopers.infrastructure.user.UserJpaRepository
 import com.loopers.utils.DatabaseCleanUp
 import jakarta.persistence.EntityManagerFactory
@@ -17,6 +19,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -32,7 +36,11 @@ class ProductLikeMockMvcTest @Autowired constructor(
     private val brands: BrandJpaRepository,
     private val products: ProductJpaRepository,
     private val likes: ProductLikeJpaRepository,
+    private val likeRepository: ProductLikeRepository,
+    private val productRepository: ProductRepository,
+    private val transactionManager: PlatformTransactionManager,
     private val users: UserJpaRepository,
+    private val initialization: UserInitializationService,
     private val entityManagerFactory: EntityManagerFactory,
     private val cleanUp: DatabaseCleanUp,
 ) {
@@ -41,8 +49,8 @@ class ProductLikeMockMvcTest @Autowired constructor(
 
     @Test
     fun `like is idempotent isolated by user and cancellable after product deletion`() {
-        val user1 = users.save(UserJpaEntity("사용자1"))
-        val user2 = users.save(UserJpaEntity("사용자2"))
+        val user1 = initialization.create("사용자1")
+        val user2 = initialization.create("사용자2")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val product = products.save(ProductJpaEntity(brand.id, "상품", 100, 1))
         repeat(2) {
@@ -90,12 +98,15 @@ class ProductLikeMockMvcTest @Autowired constructor(
 
     @Test
     fun `like page reads only active rows needed for requested page`() {
-        val user = users.save(UserJpaEntity("사용자"))
+        val user = initialization.create("사용자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val likedAt = ZonedDateTime.now().minusDays(1)
         val productIds = (0 until 30).map { index ->
             val product = products.save(ProductJpaEntity(brand.id, "상품$index", 100, 1))
-            likes.save(ProductLikeJpaEntity(user.id, product.id, likedAt.plusSeconds(index.toLong())))
+            TransactionTemplate(transactionManager).execute {
+                checkNotNull(productRepository.findActiveForUpdate(product.id))
+                likeRepository.createIfAbsent(ProductLike(user.id, product.id, likedAt = likedAt.plusSeconds(index.toLong())))
+            }
             product.id
         }
         val deleted = products.findById(productIds.last()).orElseThrow()
