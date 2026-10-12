@@ -8,7 +8,7 @@ import com.loopers.infrastructure.order.OrderJpaRepository
 import com.loopers.infrastructure.point.PointAccountJpaEntity
 import com.loopers.infrastructure.point.PointAccountJpaRepository
 import com.loopers.infrastructure.product.ProductJpaRepository
-import com.loopers.infrastructure.user.UserJpaEntity
+import com.loopers.application.user.UserInitializationService
 import com.loopers.infrastructure.user.UserJpaRepository
 import com.loopers.utils.DatabaseCleanUp
 import jakarta.persistence.EntityManager
@@ -39,6 +39,7 @@ class OrderMockMvcTest @Autowired constructor(
     private val brands: BrandJpaRepository,
     private val products: ProductJpaRepository,
     private val users: UserJpaRepository,
+    private val initialization: UserInitializationService,
     private val accounts: PointAccountJpaRepository,
     private val orders: OrderJpaRepository,
     private val jdbc: JdbcTemplate,
@@ -51,7 +52,7 @@ class OrderMockMvcTest @Autowired constructor(
 
     @Test
     fun `charge draft confirm and read snapshots end to end`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+        val buyer = initialization.create("구매자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val first = products.save(ProductJpaEntity(brand.id, "첫 상품", 1000, 5))
         val second = products.save(ProductJpaEntity(brand.id, "두번째 상품", 2000, 3))
@@ -77,7 +78,7 @@ class OrderMockMvcTest @Autowired constructor(
 
         first.price = 3000
         products.saveAndFlush(first)
-        val otherBuyer = users.save(UserJpaEntity("다른 구매자"))
+        val otherBuyer = initialization.create("다른 구매자")
         mvc.perform(get("/api/v1/orders/$orderId").header("X-USER-ID", otherBuyer.id))
             .andExpect(status().isForbidden)
             .andExpect(jsonPath("$.meta.errorCode").value("ORDER_NOT_OWNED"))
@@ -116,7 +117,7 @@ class OrderMockMvcTest @Autowired constructor(
 
     @Test
     fun `insufficient stock keeps draft order points and stock unchanged`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+        val buyer = initialization.create("구매자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val first = products.save(ProductJpaEntity(brand.id, "첫 상품", 1000, 3))
         val product = products.save(ProductJpaEntity(brand.id, "두번째 상품", 1000, 1))
@@ -144,7 +145,7 @@ class OrderMockMvcTest @Autowired constructor(
 
     @Test
     fun `insufficient points preserve stock and draft order`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+        val buyer = initialization.create("구매자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val product = products.save(ProductJpaEntity(brand.id, "상품", 1000, 1))
         val response = mvc.perform(
@@ -160,12 +161,12 @@ class OrderMockMvcTest @Autowired constructor(
         entityManager.clear()
         assertThat(orders.findById(orderId).orElseThrow().status.name).isEqualTo("DRAFT")
         assertThat(products.findById(product.id).orElseThrow().stock).isEqualTo(1)
-        assertThat(accounts.findById(buyer.id)).isEmpty()
+        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isZero()
     }
 
     @Test
-    fun `zero amount order confirms without creating a point account`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+    fun `zero amount order confirms using existing zero balance account`() {
+        val buyer = initialization.create("구매자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val product = products.save(ProductJpaEntity(brand.id, "무료 상품", 0, 1))
         val response = mvc.perform(
@@ -178,13 +179,13 @@ class OrderMockMvcTest @Autowired constructor(
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.paymentAmount").value(0))
         entityManager.clear()
-        assertThat(accounts.findById(buyer.id)).isEmpty()
+        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isZero()
         assertThat(products.findById(product.id).orElseThrow().stock).isZero()
     }
 
     @Test
     fun `deleted draft product rejects confirmation without changing order stock or points`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+        val buyer = initialization.create("구매자")
         accounts.save(PointAccountJpaEntity(buyer.id, 10_000))
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val first = products.save(ProductJpaEntity(brand.id, "첫 상품", 1000, 3))
@@ -223,7 +224,7 @@ class OrderMockMvcTest @Autowired constructor(
 
     @Test
     fun `duplicate quantity overflow creates no order`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+        val buyer = initialization.create("구매자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val product = products.save(ProductJpaEntity(brand.id, "상품", 1000, 1))
         mvc.perform(
@@ -237,7 +238,7 @@ class OrderMockMvcTest @Autowired constructor(
 
     @Test
     fun `multi item confirmation does not flush for every product`() {
-        val buyer = users.save(UserJpaEntity("구매자"))
+        val buyer = initialization.create("구매자")
         accounts.save(PointAccountJpaEntity(buyer.id, 20_000))
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val productIds = (0 until 12).map { index ->

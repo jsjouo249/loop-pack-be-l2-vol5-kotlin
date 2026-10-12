@@ -2,18 +2,23 @@ package com.loopers.infrastructure.like
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.Lock
+import jakarta.persistence.LockModeType
 import org.springframework.data.repository.query.Param
 
 interface ProductLikeJpaRepository : JpaRepository<ProductLikeJpaEntity, Long> {
     fun countByProductId(productId: Long): Long
 
     @Query(
-        "select l.productId as productId, count(l) as likeCount from ProductLikeJpaEntity l " +
-            "where l.productId in :productIds group by l.productId",
+        "select p.id as productId, p.likeCount as likeCount from ProductJpaEntity p where p.id in :productIds",
     )
     fun countByProductIds(@Param("productIds") productIds: Collection<Long>): List<ProductLikeCount>
 
     fun findByUserIdAndProductId(userId: Long, productId: Long): ProductLikeJpaEntity?
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select l from ProductLikeJpaEntity l where l.userId = :userId and l.productId = :productId")
+    fun findForUpdate(@Param("userId") userId: Long, @Param("productId") productId: Long): ProductLikeJpaEntity?
 
     @Query(
         value = "select l.* from product_likes l join products p on p.id = l.product_id " +
@@ -33,8 +38,6 @@ interface ProductLikeJpaRepository : JpaRepository<ProductLikeJpaEntity, Long> {
         nativeQuery = true,
     )
     fun countActiveByUser(@Param("userId") userId: Long): Long
-
-    fun deleteByUserIdAndProductId(userId: Long, productId: Long): Long
 }
 
 interface ProductLikeCount {

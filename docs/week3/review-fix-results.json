@@ -1,0 +1,259 @@
+{
+  "validated_at": "2026-10-06T01:07:07.510285+00:00",
+  "command": "env DOCKER_CONFIG=/private/tmp/looppack-review-docker ./gradlew :apps:commerce-api:ktlintCheck :apps:commerce-api:check --console=plain",
+  "exit_code": 0,
+  "totals": {
+    "tests": 122,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "com.loopers.CommerceApiContextTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "예시를 조회할 때,",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.example.ExampleFacadeIntegrationTest",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.AdministrativeConcurrencyTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.AggregateCoordinationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.BrandDeletionHttpTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.BrandRemovalTransactionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.LostUpdateControlTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.MySqlTransactionPolicyTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.OrderConcurrencyTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.PartialStorageTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.PointInitializationTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.ReviewFixRegressionTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.ReviewQueryPlanTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.SqlContractTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.WriteRollbackTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.architecture.ArchitectureTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.brand.BrandTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "예시 모델을 생성할 때,",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.order.OrderTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.point.PointAccountTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.product.ProductTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.product.StockTest",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.infrastructure.CommerceSchemaTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.ContractClassificationTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "GET /api/v1/examples/{id}",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.ExampleV1ApiE2ETest",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.admin.AdminCommerceMockMvcTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.like.ProductLikeMockMvcTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.order.OrderMockMvcTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.point.PointMockMvcTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.product.CustomerBrowseMockMvcTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.support.error.CoreExceptionTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "query_plans": [
+    "REVIEW_QUERY_PLAN index=idx_products_active_latest -> Limit: 20 row(s)  (cost=202 rows=20) (actual time=0.0294..0.0327 rows=20 loops=1)\n    -> Filter: (products.deleted_at is null)  (cost=202 rows=2000) (actual time=0.0288..0.0315 rows=20 loops=1)\n        -> Covering index lookup on products using idx_products_active_latest (deleted_at=NULL)  (cost=202 rows=2000) (actual time=0.0202..0.0219 rows=20 loops=1)",
+    "REVIEW_QUERY_PLAN index=idx_products_active_brand_latest -> Limit: 20 row(s)  (cost=20.5 rows=20) (actual time=0.0183..0.0217 rows=20 loops=1)\n    -> Filter: (products.deleted_at is null)  (cost=20.5 rows=200) (actual time=0.0178..0.0203 rows=20 loops=1)\n        -> Covering index lookup on products using idx_products_active_brand_latest (deleted_at=NULL, brand_id=4)  (cost=20.5 rows=200) (actual time=0.017..0.0187 rows=20 loops=1)",
+    "REVIEW_QUERY_PLAN index=idx_products_active_price -> Limit: 20 row(s)  (cost=202 rows=20) (actual time=0.0197..0.0228 rows=20 loops=1)\n    -> Filter: (products.deleted_at is null)  (cost=202 rows=2000) (actual time=0.0192..0.0215 rows=20 loops=1)\n        -> Covering index lookup on products using idx_products_active_price (deleted_at=NULL)  (cost=202 rows=2000) (actual time=0.0188..0.0203 rows=20 loops=1)",
+    "REVIEW_QUERY_PLAN index=idx_products_active_brand_price -> Limit: 20 row(s)  (cost=20.5 rows=20) (actual time=0.0152..0.0183 rows=20 loops=1)\n    -> Filter: (products.deleted_at is null)  (cost=20.5 rows=200) (actual time=0.0147..0.017 rows=20 loops=1)\n        -> Covering index lookup on products using idx_products_active_brand_price (deleted_at=NULL, brand_id=4)  (cost=20.5 rows=200) (actual time=0.014..0.0155 rows=20 loops=1)",
+    "REVIEW_QUERY_PLAN index=idx_products_active_likes -> Limit: 20 row(s)  (cost=202 rows=20) (actual time=0.0189..0.0219 rows=20 loops=1)\n    -> Filter: (products.deleted_at is null)  (cost=202 rows=2000) (actual time=0.0186..0.0207 rows=20 loops=1)\n        -> Covering index lookup on products using idx_products_active_likes (deleted_at=NULL)  (cost=202 rows=2000) (actual time=0.0182..0.0195 rows=20 loops=1)",
+    "REVIEW_QUERY_PLAN index=idx_products_active_brand_likes -> Limit: 20 row(s)  (cost=20.5 rows=20) (actual time=0.0135..0.0163 rows=20 loops=1)\n    -> Filter: (products.deleted_at is null)  (cost=20.5 rows=200) (actual time=0.0132..0.0153 rows=20 loops=1)\n        -> Covering index lookup on products using idx_products_active_brand_likes (deleted_at=NULL, brand_id=4)  (cost=20.5 rows=200) (actual time=0.0129..0.014 rows=20 loops=1)"
+  ]
+}

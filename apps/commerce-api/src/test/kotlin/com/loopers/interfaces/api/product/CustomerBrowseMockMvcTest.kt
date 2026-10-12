@@ -2,8 +2,9 @@ package com.loopers.interfaces.api.product
 
 import com.loopers.infrastructure.brand.BrandJpaEntity
 import com.loopers.infrastructure.brand.BrandJpaRepository
-import com.loopers.infrastructure.like.ProductLikeJpaEntity
-import com.loopers.infrastructure.like.ProductLikeJpaRepository
+import com.loopers.domain.like.ProductLike
+import com.loopers.domain.like.ProductLikeRepository
+import com.loopers.domain.product.ProductRepository
 import com.loopers.infrastructure.product.ProductJpaEntity
 import com.loopers.infrastructure.product.ProductJpaRepository
 import com.loopers.utils.DatabaseCleanUp
@@ -15,6 +16,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.support.TransactionTemplate
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -26,10 +29,17 @@ class CustomerBrowseMockMvcTest @Autowired constructor(
     private val mvc: MockMvc,
     private val brands: BrandJpaRepository,
     private val products: ProductJpaRepository,
-    private val likes: ProductLikeJpaRepository,
+    private val likes: ProductLikeRepository,
+    private val productRepository: ProductRepository,
+    private val transactionManager: PlatformTransactionManager,
     private val entityManagerFactory: EntityManagerFactory,
     private val cleanUp: DatabaseCleanUp,
 ) {
+    private fun like(userId: Long, productId: Long) = TransactionTemplate(transactionManager).execute {
+        checkNotNull(productRepository.findActiveForUpdate(productId))
+        likes.createIfAbsent(ProductLike(userId, productId))
+    }
+
     @AfterEach
     fun clean() = cleanUp.truncateAllTables()
 
@@ -38,9 +48,9 @@ class CustomerBrowseMockMvcTest @Autowired constructor(
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val expensive = products.save(ProductJpaEntity(brand.id, "비싼 상품", 9000, 1))
         val popular = products.save(ProductJpaEntity(brand.id, "인기 상품", 1000, 0))
-        likes.saveAndFlush(ProductLikeJpaEntity(1, popular.id))
-        likes.saveAndFlush(ProductLikeJpaEntity(2, popular.id))
-        likes.saveAndFlush(ProductLikeJpaEntity(1, expensive.id))
+        like(1, popular.id)
+        like(2, popular.id)
+        like(1, expensive.id)
 
         mvc.perform(get("/api/v1/brands/${brand.id}"))
             .andExpect(status().isOk)
@@ -103,8 +113,8 @@ class CustomerBrowseMockMvcTest @Autowired constructor(
         val liked = products.save(ProductJpaEntity(firstBrand.id, "좋아요 있음", 100, 1))
         val otherBrandProduct = products.save(ProductJpaEntity(secondBrand.id, "다른 브랜드 상품", 100, 1))
         val newerUnliked = products.save(ProductJpaEntity(firstBrand.id, "새 상품", 100, 1))
-        likes.save(ProductLikeJpaEntity(1, liked.id))
-        repeat(3) { index -> likes.save(ProductLikeJpaEntity(index + 1L, otherBrandProduct.id)) }
+        like(1, liked.id)
+        repeat(3) { index -> like(index + 1L, otherBrandProduct.id) }
 
         mvc.perform(get("/api/v1/products?brandId=${firstBrand.id}&sort=likes_desc"))
             .andExpect(status().isOk)

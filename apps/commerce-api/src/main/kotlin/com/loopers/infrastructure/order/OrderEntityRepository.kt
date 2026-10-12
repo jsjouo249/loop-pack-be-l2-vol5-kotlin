@@ -24,8 +24,20 @@ data class OrderEntity(
     val state: EntityState,
 )
 
+data class OrderConfirmation(
+    val id: Long,
+    val status: OrderStatus,
+    val paymentAmount: Long,
+    val paymentResult: PaymentResult,
+    val confirmedAt: ZonedDateTime,
+)
+
 interface OrderEntityRepository {
-    fun save(entity: OrderEntity): OrderEntity
+    fun create(entity: OrderEntity): OrderEntity
+
+    fun findForUpdate(id: Long): OrderEntity?
+
+    fun saveConfirmation(change: OrderConfirmation): OrderEntity
 
     fun find(id: Long): OrderEntity?
 

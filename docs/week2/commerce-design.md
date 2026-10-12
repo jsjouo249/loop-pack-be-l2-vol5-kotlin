@@ -1,4 +1,17 @@
+> 전체 리뷰 후 변경한 저장 구조·조회 일관성·좋아요 동시성·Example 경계의 최신 계약은
+> [review-fixes.md](../week3/review-fixes.md)를 따른다. 원래 기획/사용자 결정과 보완 설계 결정을 구분한다.
+
 # 커머스 기본 기능 설계
+
+> 3주차의 변경 범위와 검증 계획은 [트랜잭션·동시성 작업 계획](../week3/implementation-plan.md),
+> 확정한 설계 선택은 [설계 결정과 검증 기준](../week3/design-discussion.md), 오류 응답과
+> 재시도는 [오류 처리 정책](../week3/transaction-error-policy.md)에 정리한다. 저장 계약·잠금 범위·
+> API의 구체적인 변경은 [3주차 Backend 상세 설계](../week3/backend-design.md)를 따른다.
+> 아래의 3주차 변경 지점은 확정 정책과 운영 코드에 맞춰 갱신했다. 실제 MySQL 포함 111건과 정적 검사를 통과했다.
+> 실행 결과와 미검증 범위는 [3주차 실행 기록](../week3/verification-report.md)을 따른다.
+> 3주차에는 브랜드 일괄 삭제·상품 등록 공통 보호, 비관적 잠금, 작업별 저장 계약,
+> User·PointAccount 동시 생성과 기존 누락 보정, 보호하는 쓰기 공통 deadlock 1회 재시도·50ms 대기 및
+> 일시적 잠금 실패의 `503 TRANSACTION_BUSY` 계약으로 변경한다.
 
 ## 1. 문서 목적
 
@@ -298,8 +311,8 @@ Repository는 루트 단위로 둔다. `BrandRepository`, `ProductRepository`,
 - 불변식: 정규화한 이름은 1~255자
 - 책임 밖: 연결 상품 조회와 삭제 가능 여부 판단
 
-브랜드 삭제 유스케이스는 application이 `ProductRepository.existsActiveByBrandId()`를 호출해
-활성 상품이 하나라도 있으면 거절한 뒤 `brand.delete()`를 호출한다.
+[3주차] application이 Brand를 잠근 뒤 활성 Product ID를 오름차순으로 수집·잠근다.
+각 Product와 Brand에 삭제 행동을 요청하고 삭제 필드만 한 트랜잭션에서 저장한다.
 
 ### 6.2 Product Aggregate
 
@@ -319,7 +332,7 @@ Repository는 루트 단위로 둔다. `BrandRepository`, `ProductRepository`,
   - 차감 수량은 양수이며 현재 재고 이하여야 함
 - 책임 밖: 브랜드명 조회, 좋아요 수 집계, HTTP 응답 조합
 
-상품 생성 시 활성 브랜드를 조회한다. 생성 후 `brandId`는 바뀌지 않는다.
+상품 생성 시 활성 브랜드를 잠금 조회하고 생성 commit까지 보호한다. 생성 후 `brandId`는 바뀌지 않는다.
 
 ### 6.3 ProductLike Aggregate
 
@@ -368,10 +381,9 @@ hard delete가 실제 범위에 들어오면 orphan 방지와 정리 순서를 �
 행동의 입력 규칙을 구분한다.
 
 `PointBalance`는 음수 잔액과 범위 초과를 거절하고 새로운 잔액 값을 반환하는 불변 VO로
-구현한다. `PointAccount`가 그 값을 자신의 상태로 교체한다. 별도 계정 행이 없는
-기존 사용자의 잔액 조회 결과는 0이다. 첫 충전에서 계정 행을 만들며, 주문 확정도
-잔액 0인 계정으로 부족 여부를 판단한다. DB의 `user_id` PK로 사용자당 계정 하나를 보장한다.
-이번 주차의 동시성 제어 비범위 정책은 그대로 유지한다.
+구현한다. `PointAccount`가 그 값을 자신의 상태로 교체한다. [3주차] User와 잔액 0 계정을
+동시에 생성하고 기존 누락만 별도 보정한다. 전환 후 계정 부재는 무결성 오류(500)이며
+충전·결제에서 같은 계정 행을 잠근다. DB의 `user_id` PK로 중복 계정을 막는다.
 
 #### 6.4.1 포인트 정책 결정 기록
 
@@ -427,7 +439,7 @@ application이 필요한 Aggregate를 조회해 행동을 호출한다.
 | `INV-009` | 주문 금액은 생성 시점 단가 snapshot이다. | 생성 후 상품 가격 변경 | 주문 단가·합계 불변 | Order, OrderItem |
 | `INV-010` | 확정은 본인의 DRAFT 주문에 한 번만 가능하다. | 타인 주문 또는 재확정 | 403/409, 상태 변화 없음 | Order, confirm use case |
 | `INV-011` | 확정은 모든 재고와 잔액이 충분해야 원자적으로 성공한다. | 두 번째 품목 재고 부족 | 모든 재고·잔액·주문 유지 | confirm transaction |
-| `INV-012` | 활성 상품이 남은 브랜드는 삭제할 수 없다. | 재고 0인 활성 상품 존재 | 409, 브랜드 활성 유지 | Brand delete use case |
+| `INV-012` | 브랜드와 연결된 미삭제 상품을 함께 soft delete한다. | 재고 0인 상품 존재 또는 저장 중 실패 | 성공 시 모두 삭제, 실패 시 전체 rollback | Brand delete use case |
 | `INV-013` | 실패한 변경은 기존 상태를 유지한다. | overflow 충전, 권한 실패 | 트랜잭션 rollback | Application transaction |
 | `INV-014` | 충전 포인트는 시간 경과만으로 감소하거나 만료되지 않는다. | 충전 후 장기간 미사용 | 기존 잔액 유지 | PointAccount/PointBalance policy |
 | `INV-015` | Product soft delete는 ProductLike를 삭제하지 않는다. | Like가 있는 Product 삭제 | Like 유지, 고객 목록 제외, 취소 허용 | Product/Like application |
@@ -485,7 +497,7 @@ DELETE 좋아요
 ```text
 1. POST /points/charge amount=10,000
    -> User 조회
-   -> PointAccount 조회, 없으면 잔액 0으로 생성
+   -> 기존 PointAccount 잠금 조회, 누락은 무결성 오류
    -> pointAccount.charge(10,000)
    -> 잔액 10,000 저장
 
@@ -499,7 +511,7 @@ DELETE 좋아요
    -> 요청 사용자 확인
    -> 본인의 DRAFT Order 조회
    -> 주문 품목의 활성 Product 조회
-   -> PointAccount 조회, 없으면 잔액 0으로 판단
+   -> 기존 PointAccount 잠금 조회, 누락은 무결성 오류
    -> 모든 재고와 잔액 사전 검증
    -> Product.decreaseStock()
    -> PointAccount.pay(7,000)
@@ -564,7 +576,7 @@ DELETE 좋아요
 | 404 | `BRAND_NOT_FOUND` | 브랜드가 없거나 고객/변경 대상에서 삭제됨 |
 | 404 | `PRODUCT_NOT_FOUND` | 상품이 없거나 고객/변경 대상에서 삭제됨 |
 | 404 | `ORDER_NOT_FOUND` | 주문이 존재하지 않음 |
-| 409 | `BRAND_HAS_ACTIVE_PRODUCTS` | 활성 상품이 연결된 브랜드 삭제 |
+| 503 | `TRANSACTION_BUSY` | 전체 rollback 확인 잠금 timeout 또는 deadlock 재시도 소진 |
 | 409 | `ORDER_ALREADY_CONFIRMED` | CONFIRMED 주문을 다시 확정 |
 | 409 | `INSUFFICIENT_STOCK` | 확정 시 상품 재고 부족 |
 | 409 | `INSUFFICIENT_POINTS` | 확정 시 포인트 잔액 부족 |
@@ -673,6 +685,11 @@ data class AdminProductResponse(
 `confirmedAt`은 `null`이고 CONFIRMED 주문은 모두 값이 있어야 한다.
 
 ## 10. API 설계
+
+[3주차 변경] 아래 기존 API 중 주문 확정·충전·브랜드 삭제·상품 등록·상품 정보 수정·재고 설정·
+상품 삭제·브랜드 이름 수정에는 `503 TRANSACTION_BUSY`가 추가된다. 충전·잔액 조회·주문 확정의
+계정 누락은 500이다. 성공 응답·권한은 유지한다. 세부 계약은 [변경 API 9개](../week3/backend-design.md#6-api-설계)를 따른다.
+
 
 모든 API는 신규다. 목록 query의 `brandId`, `userId`가 존재하지 않거나 결과가 없을 때는
 단건 오류 대신 빈 page를 반환한다.
@@ -835,15 +852,15 @@ GET /api/v1/points
 - Query: 없음
 - Body: 없음
 - Response: `ApiResponse<PointResponse>`
-- 성공: 200, 현재 잔액. 계정 행이 없으면 0
+- 성공: 200, 저장된 현재 잔액. [3주차] 계정 부재는 500 무결성 오류
 - 권한: 존재하는 요청 사용자
 - 주요 오류: `400 INVALID_REQUEST`, `401 AUTHENTICATION_REQUIRED`, `404 USER_NOT_FOUND`
 - 역할: 자신의 저장된 포인트 잔액 조회
 - 사용 상황: 고객이 충전 또는 주문 전후의 현재 잔액을 확인할 때 호출
 - 기획서 연계: `[직접]` 포인트·주문 > 내 잔액 조회
 
-실습 사용자 fixture는 포인트 계정 없이 만든다. 계정 행이 없으면 조회 잔액은 0이며,
-첫 충전 시 `point_balances` 행을 생성한다.
+[3주차] fixture도 `UserInitializationService.create`로 User와 잔액 0 계정을 함께 만든다.
+첫 충전과 0원 주문도 기존 계정만 사용하며 누락을 자동 복구하지 않는다.
 
 ### 10.4 고객 주문
 
@@ -1032,12 +1049,12 @@ DELETE /api-admin/v1/brands/{brandId}
 - Query: 없음
 - Body: 없음
 - Response: `ApiResponse<Nothing>`
-- 성공: 200, 브랜드 soft delete
+- 성공: 200, 브랜드와 연결 미삭제 상품 전체 soft delete
 - 권한: ADMIN + CSRF
 - 주요 오류: `400 INVALID_REQUEST`, `403 ADMIN_FORBIDDEN`, `404 BRAND_NOT_FOUND`,
-  `409 BRAND_HAS_ACTIVE_PRODUCTS`
-- 삭제 조건: 재고와 무관하게 활성 상품이 하나라도 있으면 거절
-- 역할: 연결된 활성 상품이 없는 브랜드를 soft delete
+  `503 TRANSACTION_BUSY`
+- 삭제 범위: 재고 0 포함 미삭제 상품 전체, 연결 상품 없는 브랜드도 정상 처리
+- 역할: 브랜드와 연결 상품을 원자적으로 soft delete
 - 사용 상황: 관리자가 더 이상 사용할 브랜드를 삭제할 때 호출
 - 기획서 연계: `[직접]` 관리자 > 브랜드 전체 CRUD·기본 삭제 조건
 
@@ -1242,7 +1259,7 @@ GET /api-admin/v1/orders/{orderId}
 - PK: `user_id` — 사용자당 계정 하나를 보장한다.
 - Check: `balance >= 0`
 - User와의 물리 FK는 두지 않는다. API에서 User 존재를 먼저 확인하고, 현재 User 삭제 API는 없다.
-- 계정 행이 없으면 잔액 0으로 읽고 첫 충전 때 행을 만든다.
+- [3주차] User 생성과 함께 잔액 0 계정을 만든다. 전환 후 누락은 무결성 오류다.
 - 변경: `PointAccount.charge`, `PointAccount.pay` 행동으로만 충전·결제
 
 ### 11.3 `brands`
@@ -1349,40 +1366,44 @@ GET /api-admin/v1/orders/{orderId}
 
 ### 12.2 주문 확정
 
-1. 요청 사용자를 확인하고 Order를 조회한다.
-2. 소유자와 DRAFT 상태를 확인한다.
-3. 주문 품목의 활성 Product를 조회한다.
-4. 모든 상품의 존재·활성 상태와 재고를 확인한다.
-5. PointAccount의 잔액을 확인한다. 계정 행이 없으면 잔액은 0이다.
-6. 모든 검증 후 재고·포인트·주문을 변경한다.
-7. 하나라도 실패하면 전체 rollback한다.
+[3주차 사용자 결정] 요청자 확인 후 Order → PointAccount → Product ID 오름차순으로 잠근다.
+소유자·DRAFT·상품 활성·재고·잔액을 모두 검증한 뒤 domain 행동을 수행한다.
+`saveStockChanges`, `saveBalance`, `saveConfirmation`은 해당 작업의 필드만 저장한다.
+주문 품목·가격 snapshot은 유지한다. 0원 주문도 존재하는 PointAccount를 사용한다.
 
-검증과 상태 변경은 하나의 application transaction 안에서 실행한다. 실패 시 재고·포인트·
-주문 상태를 함께 rollback한다. 조회한 domain 객체는 JPA 변경 감지 대상이 아니므로
-`ProductRepository.saveAll()`, `PointAccountRepository.save()`, `OrderRepository.save()`로 명시적으로
-저장한다. 상품 전체를 검증한 뒤 재고 변경분을 일괄 저장해 품목별 flush를 피한다.
+공통 `RetryingWriteExecutor`는 트랜잭션 밖에서 `WriteTransactionAttempt` 프록시를 호출한다.
+확인된 전체 rollback deadlock만 자원 반환 후 50ms 대기하여 최대 1회 재시도한다.
+잠금 timeout은 재시도하지 않는다. 확인된 잠금 실패는 503, 업무 거절은 기존 4xx,
+무결성·프로그램 오류·결과 불명은 500이다. 상세 시간·분류는 [3주차 설계](../week3/backend-design.md)를 따른다.
 
 ### 12.3 포인트 충전
 
-- User 존재를 확인하고 PointAccount를 조회한다. 계정 행이 없으면 새 잔액 0 계정으로 시작한다.
-- `Math.addExact`에 해당하는 overflow 검사를 수행한다.
-- 실패 시 잔액을 변경하지 않는다.
+User 존재를 확인하고 기존 PointAccount를 잠근 뒤 domain `charge`와 잔액 전용 저장을 수행한다.
+주문 확정과 같은 공통 transaction/retry 경계를 사용한다. 누락 계정은 500이며 자동 생성하지 않는다.
+User와 계정 생성은 `UserInitializationService.create`의 별도 단일 transaction이다.
 
 ### 12.4 브랜드 삭제와 상품 생성
 
-- 브랜드 삭제는 활성 Product가 있는지 확인하고, 있으면 거절한다.
-- 상품 생성은 Brand의 활성 상태를 확인하고 저장한다.
+브랜드 삭제의 첫 DB 조회는 Brand 잠금이다. 이어 활성 Product ID를 조회하고 각 ID를
+오름차순으로 잠근 뒤 domain 삭제 행동과 부분 저장을 수행한다. 전체가 한 transaction이다.
+상품 생성도 같은 Brand 잠금으로 활성 확인부터 insert commit까지 보호한다.
+이름·가격·최종 재고·개별 삭제는 선행 잠금 없이 활성 조건 부분 UPDATE를 사용한다.
+이들 8개와 리뷰 보완에서 추가한 좋아요 등록·취소 2개는 공통 retry 경계를 통과한다. 일반 조회는 잠그지 않는다.
 
 ### 12.5 좋아요 멱등성
+
+[리뷰 보완] Product → ProductLike current read 잠금과 공통 executor로 등록·취소를 직렬화한다.
+중복 요청은 집계를 변경하지 않으며 관계와 조회 projection이 함께 commit/rollback된다.
+목록 조합은 readOnly REPEATABLE_READ transaction에서 수행한다. [상세](../week3/review-fixes.md).
 
 - 등록 전 기존 관계를 조회해 이미 있으면 멱등 성공으로 처리한다.
 - `(user_id, product_id)` unique constraint로 중복 행을 막는다.
 - 취소는 자신의 복합 키로 삭제하고 삭제 행이 0개여도 성공한다.
 - 새 등록은 활성 상품에만 허용한다. 삭제 상품의 기존 관계는 목록에서 숨기고 취소는 허용한다.
 
-동시성 제어는 3주차 범위다. `@Transactional`은 한 요청의 원자성을 보장하지만 동시 요청
-사이의 순서나 충돌 결과까지 보장하지 않는다.
-단순 조회와 단일 저장에는 application의 `@Transactional`을 붙이지 않는다. 단일 저장은
+[3주차] 위 보호 경로에는 명시적 행 잠금/부분 UPDATE와 공통 재시도를 적용한다.
+`@Transactional`만으로 동시 요청의 읽기·변경 경쟁이 보호되는 것은 아니다.
+여러 조회를 조합하는 유스케이스는 application의 읽기 transaction으로 snapshot을 보장한다. 단일 저장은
 Spring Data JPA의 저장 메서드 트랜잭션을 사용한다. 주문 조회는 JPA adapter가 품목을
 domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 adapter 조회에 읽기 트랜잭션을 둔다.
 
@@ -1411,7 +1432,8 @@ domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 
 - 비용: 세 모델 사이의 매핑과 중복 필드가 생긴다. 조회 후 변경한 domain 객체는
   Repository에 명시적으로 저장해야 하며, `OrderItem` snapshot·식별자·생성/수정 시각을
   왕복 매핑한다.
-- 경계: 기존 Example은 starter 코드로 유지하고, 2주차 커머스 Aggregate 전체에 적용한다.
+- 경계: Example의 JPA 모델은 유지한다. 전체 리뷰 보완에서 조회 transaction을 application으로 옮기고
+  domain 예외의 HTTP 의존을 제거했다. 커머스 Aggregate의 세 모델 분리는 유지한다.
 
 ### ADR-003: 상품 조회 조합은 application 책임
 
@@ -1429,13 +1451,14 @@ domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 
 - 비용: 모든 활성 조회에 삭제 조건이 필요하다.
 - 재검토 조건: 법적 삭제나 데이터 보존 기한으로 실제 제거가 필요할 때
 
-### ADR-005: Like 관계 집계
+### ADR-005: Like 관계와 동기식 조회 projection
 
-- 선택: Like 관계를 source of truth로 하고 조회 시 count
-- 대안: Product에 `likeCount` counter 저장
-- 이유: 사용자별 등록·취소와 중복 방지를 관계 하나로 설명할 수 있다.
-- 비용: `likes_desc` 정렬에 집계 query 비용이 생긴다.
-- 재검토 조건: 데이터 규모와 측정 결과상 실시간 count가 병목일 때
+- 원래 선택: Like 관계를 source of truth로 하고 조회 시 count한다.
+- 사용자 요청: 전체 코드 리뷰의 동시성·성능 항목을 모두 수정한다.
+- 보완 결정: 관계를 source of truth로 유지하고 products.like_count를 동기식 조회 projection으로 둔다.
+  Product domain에 카운터를 추가하지 않으며 같은 transaction에서 관계와 projection을 저장한다.
+- 비용: 같은 상품의 좋아요 변경을 직렬화하며 정렬 인덱스와 기존 관계 보정이 필요하다.
+- 최신 저장·잠금·전환 계약: [리뷰 보완](../week3/review-fixes.md).
 
 ### ADR-006: 중복 주문 품목 합산
 
@@ -1457,7 +1480,7 @@ domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 
 - 선택: 주문 확정의 재고·포인트·주문 변경을 application transaction 하나로 묶는다.
 - 적용 범위: 주문 확정처럼 여러 Aggregate를 저장하거나 저장 후 응답 구성 실패까지 함께
   rollback해야 하는 서비스 메서드에만 트랜잭션을 둔다. 좋아요 취소의 파생 삭제 쿼리도
-  트랜잭션 안에서 실행한다. 단순 조회와 단일 저장에는 서비스 트랜잭션을 두지 않는다.
+  트랜잭션 안에서 실행한다. 리뷰 보완에서 여러 쿼리의 응답 조합에는 application 읽기 transaction을 추가한다.
 - 이유: 세 상태가 함께 성공하거나 실패해야 한다.
 - AI가 제안했던 대안: Order·Product·User의 `PESSIMISTIC_WRITE` 잠금과 고정 잠금 순서,
   좋아요 중복 등록의 경합 대응 SQL, 잠금 실패 응답과 동시성 테스트를 2주차에 구현한다.
@@ -1465,7 +1488,8 @@ domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 
   요구되지 않았으므로 YAGNI에 따라 잠금 조회·경합 대응 코드·동시성 테스트를 제거했다.
 - 유지하는 규칙: 한 요청 안에서 모든 재고와 잔액을 검증한 뒤 변경하고, 실패 시 전체
   rollback한다. DB unique·check 제약도 유지한다.
-- 재검토 조건: 3주차에 보호할 불변식과 경합 결과를 정한 뒤 잠금 방식과 순서를 설계한다.
+- [3주차 확정/구현] §12의 잠금 순서·작업별 저장·공통 재시도로 확장했다. User 조정용 잠금은 사용하지 않는다.
+  기술 설정과 실제 검증 상태는 [3주차 실행 기록](../week3/verification-report.md)을 따른다.
 
 ### ADR-009: 유상 충전 포인트는 만료시키지 않는다
 
@@ -1499,12 +1523,12 @@ domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 
   유지한다. 현재 잔액은 `point_balances.balance`에 저장하고 User에는 두지 않는다.
 - 이유: 유상 포인트의 충전·사용과 잔액 불변식은 사용자 표시명과 독립적인 책임이다.
   User와 생명주기가 같더라도 반드시 같은 Aggregate일 필요는 없다.
-- 초기화: User 생성 API가 없는 현재 범위에서는 별도 행이 없으면 잔액 0으로 해석하고
-  첫 충전 때 생성한다. `user_id` PK가 사용자별 단일 계정을 보장한다.
+- [3주차 초기화] 새 HTTP API 없이 내부 초기화 transaction에서 User와 잔액 0 PointAccount를 함께 생성한다.
+  누락된 기존 계정만 별도 보정하고, 이후 부재는 500이다. `user_id` PK가 중복을 막는다.
 - 비용: 별도 저장소와 계정 행 부재 처리, 기존 `users.point_balance` 데이터 이전이 필요하다.
   현재 로컬·테스트는 스키마를 재생성하며 운영 migration은 범위 밖이다. 기존 데이터를
   유지해야 하는 환경에는 컬럼 제거 전에 잔액 이관 migration이 필요하다.
-- 동시성: 2주차 비범위 정책을 유지한다. 첫 충전 동시 생성과 잔액 경합은 3주차에서 다룬다.
+- [3주차 동시성] 충전과 결제는 사전 생성한 PointAccount 행을 공통 잠금으로 보호한다.
 
 ## 14. 테스트 계획
 
@@ -1532,8 +1556,8 @@ domain 저장 데이터로 변환하는 동안 지연 로딩이 필요하므로 
 
 ### 14.2 Application 테스트
 
-- `AdminCommerceMockMvcTest`: 활성 상품이 남은 브랜드 삭제 거절. 재고를 0으로
-  바꾼 뒤에도 거절되고 브랜드가 활성 상태로 남는지 재조회한다.
+- [3주차] `BrandRemovalTransactionTest`, `BrandDeletionHttpTest`: 재고 0을 포함한 브랜드 상품 전체 삭제.
+  `WriteRollbackTest`는 실제 SQL 이후 실패와 전체 복원을 검증하도록 작성했다. 실제 MySQL 실행을 통과했다.
 - `ProductLikeMockMvcTest`: 등록·취소 멱등성, 사용자 관계 격리, 삭제 상품의 새
   좋아요 거절·기존 관계 취소·내 목록 제외.
 - `OrderMockMvcTest`: 중복 수량 합산과 DRAFT 생성 시 무차감, 본인 주문만 확정,

@@ -1,7 +1,11 @@
 package com.loopers.domain.order
 
 interface OrderRepository {
-    fun save(order: Order): Order
+    fun create(order: Order): Order
+
+    fun findForUpdate(id: Long): Order?
+
+    fun saveConfirmation(order: Order): Order
 
     fun find(id: Long): Order?
 

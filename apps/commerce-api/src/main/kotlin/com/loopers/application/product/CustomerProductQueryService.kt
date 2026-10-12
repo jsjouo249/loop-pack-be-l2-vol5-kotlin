@@ -12,6 +12,8 @@ import com.loopers.domain.product.Product
 import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.product.ProductSort
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
+import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 
 data class CustomerProductResult(
@@ -31,17 +33,20 @@ class CustomerProductQueryService(
     private val brands: BrandRepository,
     private val likes: ProductLikeRepository,
 ) {
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun get(id: Long): CustomerProductResult {
         positiveId(id)
         return getMany(listOf(id)).single()
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun getMany(ids: List<Long>): List<CustomerProductResult> {
         if (ids.isEmpty()) return emptyList()
         val found = products.findActiveByIds(ids).associateBy { it.id }
         return results(ids.map { found[it] ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND) })
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun list(brandId: Long?, page: Int, size: Int, sort: String): PageResult<CustomerProductResult> {
         if (brandId != null) positiveId(brandId)
         val productSort = when (sort) {

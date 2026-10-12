@@ -36,6 +36,13 @@ spring:
     activate:
       on-profile: local, test
 
+datasource:
+  mysql-jpa:
+    main:
+      connection-init-sql: SET SESSION innodb_lock_wait_timeout = 2
+      data-source-properties:
+        useAffectedRows: false
+
 ---
 spring:
   config:

@@ -8,11 +8,30 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class ProductRepositoryImpl(private val repository: ProductEntityRepository) : ProductRepository {
-    override fun save(product: Product): Product = repository.save(product.toEntity()).toDomain()
+    override fun create(product: Product): Product = repository.create(product.toEntity()).toDomain()
 
-    override fun saveAll(products: Collection<Product>) {
-        repository.saveAll(products.map { it.toEntity() })
+    override fun findActiveForUpdate(id: Long): Product? = repository.findActiveForUpdate(id)?.toDomain()
+
+    override fun findAnyForUpdate(id: Long): Product? = repository.findAnyForUpdate(id)?.toDomain()
+
+    override fun findActiveIdsByBrandId(brandId: Long): List<Long> = repository.findActiveIdsByBrandId(brandId)
+
+    override fun updateDetails(product: Product): Product? =
+        repository.updateDetails(ProductDetailsChange(product.id, product.name, product.price.amount))?.toDomain()
+
+    override fun setStock(product: Product): Product? =
+        repository.setStock(ProductStockChange(product.id, product.stock.remaining))?.toDomain()
+
+    override fun saveStockChanges(products: Collection<Product>) {
+        repository.saveStockChanges(products.map { ProductStockChange(it.id, it.stock.remaining) })
     }
+
+    override fun markDeleted(product: Product): Boolean =
+        repository.markDeleted(ProductDeletion(product.id, requireNotNull(product.deletedAt)))
+
+    override fun markDeletedAll(products: Collection<Product>) = repository.markDeletedAll(
+        products.map { ProductDeletion(it.id, requireNotNull(it.deletedAt)) },
+    )
 
     override fun findActive(id: Long): Product? = repository.findActive(id)?.toDomain()
 

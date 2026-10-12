@@ -1,7 +1,5 @@
 package com.loopers.domain.example
 
-import com.loopers.support.error.CoreException
-import com.loopers.support.error.ErrorType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -38,12 +36,12 @@ class ExampleModelTest {
             val name = "   "
 
             // act
-            val result = assertThrows<CoreException> {
+            val result = assertThrows<ExampleException> {
                 ExampleModel(name = name, description = "설명")
             }
 
             // assert
-            assertThat(result.errorType).isEqualTo(ErrorType.BAD_REQUEST)
+            assertThat(result.reason).isEqualTo(ExampleFailure.INVALID_INPUT)
         }
 
         @DisplayName("설명이 비어있으면, BAD_REQUEST 예외가 발생한다.")
@@ -53,12 +51,12 @@ class ExampleModelTest {
             val description = ""
 
             // act
-            val result = assertThrows<CoreException> {
+            val result = assertThrows<ExampleException> {
                 ExampleModel(name = "제목", description = description)
             }
 
             // assert
-            assertThat(result.errorType).isEqualTo(ErrorType.BAD_REQUEST)
+            assertThat(result.reason).isEqualTo(ExampleFailure.INVALID_INPUT)
         }
     }
 }

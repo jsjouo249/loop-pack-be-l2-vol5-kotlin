@@ -1,6 +1,5 @@
 package com.loopers.infrastructure.brand
 
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
@@ -11,5 +10,5 @@ interface BrandJpaRepository : JpaRepository<BrandJpaEntity, Long> {
 
     fun findByIdInAndDeletedAtIsNull(ids: Collection<Long>): List<BrandJpaEntity>
 
-    fun findByDeletedAtIsNull(pageable: Pageable): Page<BrandJpaEntity>
+    fun findByDeletedAtIsNull(pageable: Pageable): List<BrandJpaEntity>
 }

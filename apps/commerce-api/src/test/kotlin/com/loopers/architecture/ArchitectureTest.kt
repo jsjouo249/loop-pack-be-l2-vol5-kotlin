@@ -26,6 +26,16 @@ class ArchitectureTest {
             .resideInAnyPackage("..interfaces..", "..application..", "..infrastructure..")
             .check(classes)
 
+        noClasses().that().resideInAPackage("..domain..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("org.springframework.http..", "org.springframework.web..", "org.springframework.transaction..", "com.loopers.support.error..")
+            .check(classes)
+
+        noClasses().that().resideInAPackage("..infrastructure..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("..application..", "..interfaces..")
+            .check(classes)
+
         noClasses().that().resideInAnyPackage(
             "..domain.brand..",
             "..domain.product..",
@@ -41,6 +51,18 @@ class ArchitectureTest {
         noClasses().that().resideInAPackage("..application..")
             .should().dependOnClassesThat()
             .resideInAnyPackage("..interfaces..", "..infrastructure..")
+            .check(classes)
+
+        listOf(
+            "com.loopers.application.transaction.RetryingWriteExecutor",
+            "com.loopers.application.transaction.WriteTransactionAttempt",
+            "com.loopers.infrastructure.common.JpaWriteOperations",
+        ).forEach { name ->
+            assertTrue(classes.any { it.name == name }, "새 트랜잭션/저장 경계가 검사에 포함되어야 합니다: $name")
+        }
+        noClasses().that().resideInAPackage("..application..")
+            .should().dependOnClassesThat()
+            .resideInAnyPackage("jakarta.persistence..", "org.hibernate..", "org.springframework.http..", "org.springframework.web..")
             .check(classes)
 
         noClasses().that().resideInAPackage("..interfaces..")

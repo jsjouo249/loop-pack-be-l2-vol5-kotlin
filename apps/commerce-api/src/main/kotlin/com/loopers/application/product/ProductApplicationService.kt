@@ -9,7 +9,9 @@ import com.loopers.domain.commerce.CommerceException
 import com.loopers.domain.commerce.CommerceFailure
 import com.loopers.domain.product.Product
 import com.loopers.domain.product.ProductRepository
+import com.loopers.application.transaction.RetryingWriteExecutor
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.time.ZonedDateTime
 
@@ -28,18 +30,22 @@ data class ProductResult(
 class ProductApplicationService(
     private val products: ProductRepository,
     private val brands: BrandRepository,
+    private val writes: RetryingWriteExecutor,
 ) {
-    fun create(brandId: Long, name: String, price: Long, stock: Int): ProductResult {
+    fun create(brandId: Long, name: String, price: Long, stock: Int): ProductResult = writes.execute("product.create") {
         positiveId(brandId)
-        val brand = brands.findActive(brandId) ?: throw CommerceException(CommerceFailure.BRAND_NOT_FOUND)
-        return result(products.save(Product(brandId, name, price, stock)), brand.name)
+        // 브랜드 삭제와 같은 행을 잠가 등록이 먼저면 삭제 대상에 포함되고, 삭제가 먼저면 등록을 거절한다.
+        val brand = brands.findActiveForUpdate(brandId) ?: throw CommerceException(CommerceFailure.BRAND_NOT_FOUND)
+        result(products.create(Product(brandId, name, price, stock)), brand.name)
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun get(id: Long): ProductResult {
         positiveId(id)
         return result(products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND))
     }
 
+    @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun list(brandId: Long?, page: Int, size: Int): PageResult<ProductResult> {
         if (brandId != null) positiveId(brandId)
         val offset = offset(page, size)
@@ -51,27 +57,27 @@ class ProductApplicationService(
         return pageResult(page, size, products.countActive(brandId), content)
     }
 
-    @Transactional
-    fun update(id: Long, name: String, price: Long): ProductResult {
+    fun update(id: Long, name: String, price: Long): ProductResult = writes.execute("product.details") {
         positiveId(id)
         val product = products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         product.changeDetails(name, price)
-        return result(products.save(product))
+        // 지정 필드만 갱신하며, 조회 이후 삭제된 경우도 UPDATE의 활성 조건으로 거절한다.
+        result(products.updateDetails(product) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND))
     }
 
-    @Transactional
-    fun adjustStock(id: Long, stock: Int): ProductResult {
+    // 관리자는 최종 수량을 지정한다. UPDATE의 쓰기 잠금으로 주문 차감과 순서가 정해진다.
+    fun adjustStock(id: Long, stock: Int): ProductResult = writes.execute("product.stock") {
         positiveId(id)
         val product = products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         product.adjustStock(stock)
-        return result(products.save(product))
+        result(products.setStock(product) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND))
     }
 
-    fun delete(id: Long) {
+    fun delete(id: Long): Unit = writes.execute("product.delete") {
         positiveId(id)
         val product = products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         product.delete()
-        products.save(product)
+        if (!products.markDeleted(product)) throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
     }
 
     private fun result(product: Product): ProductResult =

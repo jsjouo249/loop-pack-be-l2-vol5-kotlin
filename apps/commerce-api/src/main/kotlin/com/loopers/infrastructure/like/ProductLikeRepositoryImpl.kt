@@ -13,13 +13,11 @@ class ProductLikeRepositoryImpl(private val repository: ProductLikeEntityReposit
     override fun findByUserAndProduct(userId: Long, productId: Long): ProductLike? =
         repository.findByUserAndProduct(userId, productId)?.toDomain()
 
-    override fun save(like: ProductLike) {
-        repository.save(ProductLikeEntity(like.userId, like.productId, like.id, like.likedAt))
-    }
+    override fun createIfAbsent(like: ProductLike): Long =
+        repository.createIfAbsent(ProductLikeEntity(like.userId, like.productId, like.id, like.likedAt))
 
-    override fun deleteByUserAndProduct(userId: Long, productId: Long) {
+    override fun deleteByUserAndProduct(userId: Long, productId: Long): Long =
         repository.deleteByUserAndProduct(userId, productId)
-    }
 
     override fun findActivePageByUser(userId: Long, offset: Int, limit: Int): List<ProductLike> =
         repository.findActivePageByUser(userId, offset, limit).map { it.toDomain() }

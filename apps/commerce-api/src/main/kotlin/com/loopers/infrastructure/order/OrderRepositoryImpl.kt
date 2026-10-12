@@ -8,7 +8,19 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class OrderRepositoryImpl(private val repository: OrderEntityRepository) : OrderRepository {
-    override fun save(order: Order): Order = repository.save(order.toEntity()).toDomain()
+    override fun create(order: Order): Order = repository.create(order.toEntity()).toDomain()
+
+    override fun findForUpdate(id: Long): Order? = repository.findForUpdate(id)?.toDomain()
+
+    override fun saveConfirmation(order: Order): Order = repository.saveConfirmation(
+        OrderConfirmation(
+            order.id,
+            order.status,
+            requireNotNull(order.paymentAmount).amount,
+            requireNotNull(order.paymentResult),
+            requireNotNull(order.confirmedAt),
+        ),
+    ).toDomain()
 
     override fun find(id: Long): Order? = repository.find(id)?.toDomain()
 

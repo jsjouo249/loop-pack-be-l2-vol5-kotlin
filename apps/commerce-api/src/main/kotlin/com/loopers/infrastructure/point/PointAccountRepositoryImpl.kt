@@ -9,8 +9,13 @@ class PointAccountRepositoryImpl(private val repository: PointAccountEntityRepos
     override fun findByUserId(userId: Long): PointAccount? =
         repository.findByUserId(userId)?.toDomain()
 
-    override fun save(account: PointAccount): PointAccount =
-        repository.save(PointAccountEntity(account.userId, account.balance.amount)).toDomain()
+    override fun create(account: PointAccount): PointAccount =
+        repository.create(PointAccountEntity(account.userId, account.balance.amount)).toDomain()
+
+    override fun findByUserIdForUpdate(userId: Long): PointAccount? = repository.findByUserIdForUpdate(userId)?.toDomain()
+
+    override fun saveBalance(account: PointAccount): PointAccount =
+        repository.saveBalance(PointAccountEntity(account.userId, account.balance.amount)).toDomain()
 
     private fun PointAccountEntity.toDomain(): PointAccount = PointAccount.reconstitute(userId, balance)
 }

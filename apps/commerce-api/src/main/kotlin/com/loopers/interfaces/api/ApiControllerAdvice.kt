@@ -1,11 +1,14 @@
 package com.loopers.interfaces.api
 
+import com.loopers.application.transaction.TransactionBusyException
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.loopers.domain.commerce.CommerceException
 import com.loopers.domain.commerce.CommerceFailure
 import com.loopers.domain.product.InsufficientStockException
+import com.loopers.domain.example.ExampleException
+import com.loopers.domain.example.ExampleFailure
 import jakarta.servlet.http.HttpServletRequest
 import com.loopers.support.error.CoreException
 import com.loopers.support.error.ErrorType
@@ -27,6 +30,21 @@ import kotlin.text.toRegex
 @RestControllerAdvice
 class ApiControllerAdvice {
     private val log = LoggerFactory.getLogger(ApiControllerAdvice::class.java)
+
+    @ExceptionHandler
+    fun handle(e: ExampleException): ResponseEntity<ApiResponse<*>> = failureResponse(
+        when (e.reason) {
+            ExampleFailure.INVALID_INPUT -> ErrorType.BAD_REQUEST
+            ExampleFailure.NOT_FOUND -> ErrorType.NOT_FOUND
+        },
+        e.message,
+    )
+
+    @ExceptionHandler
+    fun handle(e: TransactionBusyException): ResponseEntity<ApiResponse<*>> = ResponseEntity(
+        ApiResponse.fail("TRANSACTION_BUSY", "다른 요청을 처리 중입니다. 잠시 후 상태를 확인해 주세요."),
+        HttpStatus.SERVICE_UNAVAILABLE,
+    )
 
     @ExceptionHandler
     fun handle(e: CommerceException): ResponseEntity<ApiResponse<*>> {

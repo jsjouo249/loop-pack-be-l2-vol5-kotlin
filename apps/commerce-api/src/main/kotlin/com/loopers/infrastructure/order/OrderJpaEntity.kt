@@ -76,13 +76,6 @@ class OrderJpaEntity(
         EntityState(id, createdAt, updatedAt),
     )
 
-    fun updateFrom(entity: OrderEntity) {
-        status = entity.status
-        paymentAmount = entity.paymentAmount
-        paymentResult = entity.paymentResult
-        confirmedAt = entity.confirmedAt
-    }
-
     @PrePersist
     private fun prePersist() {
         val now = ZonedDateTime.now()
