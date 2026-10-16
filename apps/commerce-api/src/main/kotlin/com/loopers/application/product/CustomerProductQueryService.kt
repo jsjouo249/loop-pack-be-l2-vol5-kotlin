@@ -9,6 +9,13 @@ import com.loopers.domain.commerce.CommerceException
 import com.loopers.domain.commerce.CommerceFailure
 import com.loopers.domain.like.ProductLikeRepository
 import com.loopers.domain.product.Product
+import com.loopers.domain.product.ProductListQuery
+import com.loopers.domain.product.ProductListItem
+import com.loopers.domain.product.ProductListCache
+import com.loopers.domain.product.ProductListCacheRead
+import com.loopers.domain.product.ProductListKey
+import com.loopers.domain.product.ProductListSnapshot
+import io.micrometer.core.instrument.MeterRegistry
 import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.product.ProductSort
 import org.springframework.stereotype.Service
@@ -32,6 +39,9 @@ class CustomerProductQueryService(
     private val products: ProductRepository,
     private val brands: BrandRepository,
     private val likes: ProductLikeRepository,
+    private val lists: ProductListQuery,
+    private val cache: ProductListCache,
+    private val meters: MeterRegistry,
 ) {
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
     fun get(id: Long): CustomerProductResult {
@@ -56,8 +66,20 @@ class CustomerProductQueryService(
             else -> throw CommerceException(CommerceFailure.UNSUPPORTED_SORT)
         }
         val offset = offset(page, size)
-        val content = results(products.findActivePage(brandId, offset, size, productSort))
-        return pageResult(page, size, products.countActive(brandId), content)
+        val key = ProductListKey(brandId, productSort, page, size)
+        val cached = cache.read(key)
+        if (cached is ProductListCacheRead.Hit) {
+            val ids = cached.snapshot.content.map { it.id }
+            if (lists.findVisibleIds(ids).containsAll(ids)) return cached.snapshot.toResult()
+            meters.counter("commerce.product.list.visibility.rejected").increment()
+        }
+        meters.counter("commerce.product.list.db.loads").increment()
+        val content = lists.findPage(brandId, offset, size, productSort)
+        val total = products.countActive(brandId)
+        val result = pageResult(page, size, total, content)
+        val snapshot = ProductListSnapshot(content, page, size, total, result.totalPages)
+        if (cached != ProductListCacheRead.Unavailable) cache.put(key, snapshot)
+        return snapshot.toResult()
     }
 
     private fun results(pageProducts: List<Product>): List<CustomerProductResult> {
@@ -79,3 +101,7 @@ class CustomerProductQueryService(
         }
     }
 }
+
+internal fun ProductListItem.toResult() = CustomerProductResult(id, name, price, stock, brandId, brandName, likeCount, createdAt)
+
+private fun ProductListSnapshot.toResult() = PageResult(content.map { it.toResult() }, page, size, totalElements, totalPages)

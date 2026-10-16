@@ -1,5 +1,8 @@
 package com.loopers.config.redis
 
+import io.lettuce.core.ClientOptions
+import io.lettuce.core.SocketOptions
+import java.time.Duration
 import io.lettuce.core.ReadFrom
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -37,6 +40,12 @@ class RedisConfig(
         val (database, master, replicas) = redisProperties
         return lettuceConnectionFactory(database, master, replicas) {
             readFrom(ReadFrom.MASTER)
+            commandTimeout(Duration.ofMillis(200))
+            clientOptions(
+                ClientOptions.builder()
+                    .socketOptions(SocketOptions.builder().connectTimeout(Duration.ofMillis(200)).build())
+                    .build(),
+            )
         }
     }
 

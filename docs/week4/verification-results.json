@@ -1,0 +1,323 @@
+{
+  "tests": 143,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "exitCode": 0,
+  "suites": 39,
+  "command": ":apps:commerce-api:ktlintCheck :modules:redis:ktlintCheck :apps:commerce-api:check --console=plain",
+  "suiteResults": [
+    {
+      "name": "com.loopers.CommerceApiContextTest",
+      "timestamp": "2026-10-15T01:12:55.275Z",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheContractTest",
+      "timestamp": "2026-10-15T01:13:02.592Z",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheHitTest",
+      "timestamp": "2026-10-15T01:13:11.627Z",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheOutageTest",
+      "timestamp": "2026-10-15T01:13:13.772Z",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheRaceTest",
+      "timestamp": "2026-10-15T01:13:19.331Z",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.RedisProductListCacheFailureTest",
+      "timestamp": "2026-10-15T01:13:22.244Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "\uc608\uc2dc\ub97c \uc870\ud68c\ud560 \ub54c,",
+      "timestamp": "2026-10-15T01:13:22.306Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.example.ExampleFacadeIntegrationTest",
+      "timestamp": "1970-01-01T00:00:00Z",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.AdministrativeConcurrencyTest",
+      "timestamp": "2026-10-15T01:13:22.744Z",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.AggregateCoordinationTest",
+      "timestamp": "2026-10-15T01:13:24.958Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.BrandDeletionHttpTest",
+      "timestamp": "2026-10-15T01:13:24.976Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.BrandRemovalTransactionTest",
+      "timestamp": "2026-10-15T01:13:25.596Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.LostUpdateControlTest",
+      "timestamp": "2026-10-15T01:13:25.986Z",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.MySqlTransactionPolicyTest",
+      "timestamp": "2026-10-15T01:13:26.136Z",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.OrderConcurrencyTest",
+      "timestamp": "2026-10-15T01:13:35.972Z",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.PartialStorageTest",
+      "timestamp": "2026-10-15T01:13:37.402Z",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.PointInitializationTest",
+      "timestamp": "2026-10-15T01:13:38.766Z",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+      "timestamp": "2026-10-15T01:13:39.790Z",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.ReviewFixRegressionTest",
+      "timestamp": "2026-10-15T01:13:42.003Z",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.ReviewQueryPlanTest",
+      "timestamp": "2026-10-15T01:13:44.685Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.SqlContractTest",
+      "timestamp": "2026-10-15T01:13:45.651Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.WriteRollbackTest",
+      "timestamp": "2026-10-15T01:13:46.346Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.architecture.ArchitectureTest",
+      "timestamp": "2026-10-15T01:13:46.966Z",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.brand.BrandTest",
+      "timestamp": "2026-10-15T01:13:48.928Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "\uc608\uc2dc \ubaa8\ub378\uc744 \uc0dd\uc131\ud560 \ub54c,",
+      "timestamp": "2026-10-15T01:13:48.931Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.order.OrderTest",
+      "timestamp": "2026-10-15T01:13:48.934Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.point.PointAccountTest",
+      "timestamp": "2026-10-15T01:13:48.936Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.product.ProductTest",
+      "timestamp": "2026-10-15T01:13:48.939Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.domain.product.StockTest",
+      "timestamp": "2026-10-15T01:13:48.946Z",
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.infrastructure.CommerceSchemaTest",
+      "timestamp": "2026-10-15T01:13:48.966Z",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.ContractClassificationTest",
+      "timestamp": "2026-10-15T01:13:51.139Z",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "GET /api/v1/examples/{id}",
+      "timestamp": "2026-10-15T01:13:52.233Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.ExampleV1ApiE2ETest",
+      "timestamp": "1970-01-01T00:00:00Z",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.admin.AdminCommerceMockMvcTest",
+      "timestamp": "2026-10-15T01:13:54.355Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.like.ProductLikeMockMvcTest",
+      "timestamp": "2026-10-15T01:13:55.268Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.order.OrderMockMvcTest",
+      "timestamp": "2026-10-15T01:13:56.132Z",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.point.PointMockMvcTest",
+      "timestamp": "2026-10-15T01:13:57.711Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.interfaces.api.product.CustomerBrowseMockMvcTest",
+      "timestamp": "2026-10-15T01:13:58.126Z",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.support.error.CoreExceptionTest",
+      "timestamp": "2026-10-15T01:13:58.745Z",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

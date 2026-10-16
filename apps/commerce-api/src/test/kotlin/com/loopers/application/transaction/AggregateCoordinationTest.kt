@@ -47,7 +47,7 @@ class AggregateCoordinationTest {
         whenever(products.findActiveIdsByBrandId(1)).thenReturn(listOf(2, 3))
         whenever(products.findActiveForUpdate(2)).thenReturn(first)
         whenever(products.findActiveForUpdate(3)).thenReturn(zero)
-        BrandApplicationService(brands, products, executor).delete(1)
+        BrandApplicationService(brands, products, executor, mock()).delete(1)
         inOrder(brands, products) {
             verify(brands).findActiveForUpdate(1)
             verify(products).findActiveIdsByBrandId(1)
@@ -65,7 +65,7 @@ class AggregateCoordinationTest {
     fun `confirmation locks order then account then sorted products and preserves snapshots`() {
         val order = setupOrder(5)
         whenever(orders.saveConfirmation(any())).thenAnswer { it.getArgument(0) }
-        val result = OrderApplicationService(orders, products, users, points, executor).confirm(1, 4)
+        val result = OrderApplicationService(orders, products, users, points, executor, mock()).confirm(1, 4)
         inOrder(orders, points, products) {
             verify(orders).findForUpdate(4)
             verify(points).findByUserIdForUpdate(1)
@@ -84,7 +84,7 @@ class AggregateCoordinationTest {
     fun `all preconditions are checked before any aggregate mutation or storage`() {
         setupOrder(0)
         assertThrows<InsufficientStockException> {
-            OrderApplicationService(orders, products, users, points, executor).confirm(1, 4)
+            OrderApplicationService(orders, products, users, points, executor, mock()).confirm(1, 4)
         }
         verify(products, never()).saveStockChanges(any())
         verify(points, never()).saveBalance(any())

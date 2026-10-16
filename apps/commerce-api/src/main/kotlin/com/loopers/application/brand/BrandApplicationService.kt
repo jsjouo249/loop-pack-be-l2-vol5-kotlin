@@ -9,6 +9,7 @@ import com.loopers.domain.brand.BrandRepository
 import com.loopers.domain.commerce.CommerceException
 import com.loopers.domain.commerce.CommerceFailure
 import com.loopers.domain.product.ProductRepository
+import com.loopers.application.product.ProductListInvalidation
 import com.loopers.application.transaction.RetryingWriteExecutor
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
@@ -22,6 +23,7 @@ class BrandApplicationService(
     private val brands: BrandRepository,
     private val products: ProductRepository,
     private val writes: RetryingWriteExecutor,
+    private val invalidation: ProductListInvalidation,
 ) {
     fun create(name: String): BrandResult = result(brands.create(Brand(name)))
 
@@ -41,7 +43,9 @@ class BrandApplicationService(
         positiveId(id)
         val brand = brands.findActive(id) ?: throw CommerceException(CommerceFailure.BRAND_NOT_FOUND)
         brand.rename(name)
-        result(brands.updateName(brand) ?: throw CommerceException(CommerceFailure.BRAND_NOT_FOUND))
+        result(
+            brands.updateName(brand) ?: throw CommerceException(CommerceFailure.BRAND_NOT_FOUND),
+        ).also { invalidation.afterCommit() }
     }
 
     /** 상품 등록과 같은 브랜드 잠금을 사용해 삭제 대상 누락을 막고, 연결 상품과 브랜드를 함께 삭제한다. */
@@ -55,6 +59,7 @@ class BrandApplicationService(
         products.markDeletedAll(targets)
         brand.delete()
         brands.markDeleted(brand)
+        invalidation.afterCommit()
     }
 
     private fun result(brand: Brand) = BrandResult(brand.id, brand.name, brand.createdAt, brand.updatedAt)

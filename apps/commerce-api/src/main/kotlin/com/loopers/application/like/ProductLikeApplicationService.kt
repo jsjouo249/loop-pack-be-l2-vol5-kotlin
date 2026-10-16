@@ -15,6 +15,7 @@ import com.loopers.domain.user.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.annotation.Isolation
+import com.loopers.application.product.ProductListInvalidation
 import com.loopers.application.transaction.RetryingWriteExecutor
 
 data class LikeResult(val productId: Long, val liked: Boolean, val likeCount: Long)
@@ -26,19 +27,20 @@ class ProductLikeApplicationService(
     private val users: UserRepository,
     private val customerProducts: CustomerProductQueryService,
     private val writes: RetryingWriteExecutor,
+    private val invalidation: ProductListInvalidation,
 ) {
     fun like(userId: Long, productId: Long): LikeResult = writes.execute("product.like") {
         requireUser(userId)
         positiveId(productId)
         products.findActiveForUpdate(productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
-        LikeResult(productId, true, likes.createIfAbsent(ProductLike(userId, productId)))
+        LikeResult(productId, true, likes.createIfAbsent(ProductLike(userId, productId))).also { invalidation.afterCommit() }
     }
 
     fun unlike(userId: Long, productId: Long): LikeResult = writes.execute("product.unlike") {
         requireUser(userId)
         positiveId(productId)
         products.findAnyForUpdate(productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
-        LikeResult(productId, false, likes.deleteByUserAndProduct(userId, productId))
+        LikeResult(productId, false, likes.deleteByUserAndProduct(userId, productId)).also { invalidation.afterCommit() }
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)

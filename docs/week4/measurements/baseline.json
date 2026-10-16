@@ -1,0 +1,333 @@
+{
+  "phase" : "baseline",
+  "database" : "8.0.46",
+  "products" : 10000,
+  "likes" : 45000,
+  "brandOrdinal" : 7,
+  "brandId" : 1007,
+  "url" : "http://127.0.0.1:62775/api/v1/products?brandId=1007&sort=price_asc&page=0&size=20",
+  "warmup" : 20,
+  "requests" : 100,
+  "concurrency" : 1,
+  "sqlPerRequest" : 5,
+  "sql" : [ "select pje1_0.id from products pje1_0 where pje1_0.deleted_at is null and pje1_0.brand_id=? order by pje1_0.price,pje1_0.id desc limit ?", "select pje1_0.id,pje1_0.brand_id,pje1_0.created_at,pje1_0.deleted_at,pje1_0.like_count,pje1_0.name,pje1_0.price,pje1_0.stock,pje1_0.updated_at from products pje1_0 where pje1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) and pje1_0.deleted_at is null", "select bje1_0.id,bje1_0.created_at,bje1_0.deleted_at,bje1_0.name,bje1_0.updated_at from brands bje1_0 where bje1_0.id in (?) and bje1_0.deleted_at is null", "select pje1_0.id,pje1_0.like_count from products pje1_0 where pje1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", "select count(pje1_0.id) from products pje1_0 where pje1_0.brand_id=? and pje1_0.deleted_at is null" ],
+  "plans" : [ {
+    "sql" : "select pje1_0.id from products pje1_0 where pje1_0.deleted_at is null and pje1_0.brand_id=1007 order by pje1_0.price,pje1_0.id desc limit 20",
+    "explain" : [ {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "pje1_0",
+      "type" : "ref",
+      "possible_keys" : "idx_products_active_latest,idx_products_active_brand_latest,idx_products_active_price,idx_products_active_brand_price,idx_products_active_likes,idx_products_active_brand_likes,fk_products_brand",
+      "key" : "idx_products_active_brand_price",
+      "key_len" : "17",
+      "ref" : "const,const",
+      "rows" : 1000,
+      "filtered" : 100.0,
+      "Extra" : "Using where; Using index"
+    } ],
+    "analyze" : [ {
+      "EXPLAIN" : "-> Limit: 20 row(s)  (cost=101 rows=20) (actual time=0.0292..0.0325 rows=20 loops=1)\n    -> Filter: (pje1_0.deleted_at is null)  (cost=101 rows=1000) (actual time=0.0287..0.0312 rows=20 loops=1)\n        -> Covering index lookup on pje1_0 using idx_products_active_brand_price (deleted_at=NULL, brand_id=1007)  (cost=101 rows=1000) (actual time=0.0176..0.0192 rows=20 loops=1)\n"
+    } ]
+  }, {
+    "sql" : "select pje1_0.id,pje1_0.brand_id,pje1_0.created_at,pje1_0.deleted_at,pje1_0.like_count,pje1_0.name,pje1_0.price,pje1_0.stock,pje1_0.updated_at from products pje1_0 where pje1_0.id in (19717,18717,17717,16717,15717,14717,13717,12717,11717,10717,19507,18507,17507,16507,15507,14507,13507,12507,11507,10507) and pje1_0.deleted_at is null",
+    "explain" : [ {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "pje1_0",
+      "type" : "range",
+      "possible_keys" : "PRIMARY,idx_products_active_latest,idx_products_active_brand_latest,idx_products_active_price,idx_products_active_brand_price,idx_products_active_likes,idx_products_active_brand_likes",
+      "key" : "PRIMARY",
+      "key_len" : "8",
+      "rows" : 20,
+      "filtered" : 50.0,
+      "Extra" : "Using where"
+    } ],
+    "analyze" : [ {
+      "EXPLAIN" : "-> Filter: ((pje1_0.id in (19717,18717,17717,16717,15717,14717,13717,12717,11717,10717,19507,18507,17507,16507,15507,14507,13507,12507,11507,10507)) and (pje1_0.deleted_at is null))  (cost=9.03 rows=10) (actual time=0.0119..0.0307 rows=20 loops=1)\n    -> Index range scan on pje1_0 using PRIMARY over (id = 10507) OR (id = 10717) OR (18 more)  (cost=9.03 rows=20) (actual time=0.0101..0.027 rows=20 loops=1)\n"
+    } ]
+  }, {
+    "sql" : "select bje1_0.id,bje1_0.created_at,bje1_0.deleted_at,bje1_0.name,bje1_0.updated_at from brands bje1_0 where bje1_0.id in (1007) and bje1_0.deleted_at is null",
+    "explain" : [ {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "bje1_0",
+      "type" : "const",
+      "possible_keys" : "PRIMARY,IDX4do6ilbmknwpbf9p6h92rjgky",
+      "key" : "PRIMARY",
+      "key_len" : "8",
+      "ref" : "const",
+      "rows" : 1,
+      "filtered" : 100.0
+    } ],
+    "analyze" : [ {
+      "EXPLAIN" : "-> Rows fetched before execution  (cost=0..0 rows=1) (actual time=84e-6..84e-6 rows=1 loops=1)\n"
+    } ]
+  }, {
+    "sql" : "select pje1_0.id,pje1_0.like_count from products pje1_0 where pje1_0.id in (19717,18717,17717,16717,15717,14717,13717,12717,11717,10717,19507,18507,17507,16507,15507,14507,13507,12507,11507,10507)",
+    "explain" : [ {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "pje1_0",
+      "type" : "range",
+      "possible_keys" : "PRIMARY",
+      "key" : "PRIMARY",
+      "key_len" : "8",
+      "rows" : 20,
+      "filtered" : 100.0,
+      "Extra" : "Using where"
+    } ],
+    "analyze" : [ {
+      "EXPLAIN" : "-> Filter: (pje1_0.id in (19717,18717,17717,16717,15717,14717,13717,12717,11717,10717,19507,18507,17507,16507,15507,14507,13507,12507,11507,10507))  (cost=9.03 rows=20) (actual time=0.00808..0.0214 rows=20 loops=1)\n    -> Index range scan on pje1_0 using PRIMARY over (id = 10507) OR (id = 10717) OR (18 more)  (cost=9.03 rows=20) (actual time=0.00725..0.019 rows=20 loops=1)\n"
+    } ]
+  }, {
+    "sql" : "select count(pje1_0.id) from products pje1_0 where pje1_0.brand_id=1007 and pje1_0.deleted_at is null",
+    "explain" : [ {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "pje1_0",
+      "type" : "ref",
+      "possible_keys" : "idx_products_active_latest,idx_products_active_brand_latest,idx_products_active_price,idx_products_active_brand_price,idx_products_active_likes,idx_products_active_brand_likes,fk_products_brand",
+      "key" : "idx_products_active_brand_latest",
+      "key_len" : "17",
+      "ref" : "const,const",
+      "rows" : 1000,
+      "filtered" : 100.0,
+      "Extra" : "Using where; Using index"
+    } ],
+    "analyze" : [ {
+      "EXPLAIN" : "-> Aggregate: count(pje1_0.id)  (cost=201 rows=1) (actual time=0.2..0.2 rows=1 loops=1)\n    -> Filter: (pje1_0.deleted_at is null)  (cost=101 rows=1000) (actual time=0.0151..0.17 rows=1000 loops=1)\n        -> Covering index lookup on pje1_0 using idx_products_active_brand_latest (deleted_at=NULL, brand_id=1007)  (cost=101 rows=1000) (actual time=0.0145..0.126 rows=1000 loops=1)\n"
+    } ]
+  } ],
+  "p50Ms" : 16.720167,
+  "p95Ms" : 26.776166,
+  "p99Ms" : 38.542,
+  "latenciesMs" : [ 22.719375, 17.444167, 18.6555, 18.148333, 18.655792, 18.590041, 18.51475, 17.144125, 16.230125, 20.344041, 16.606917, 16.694292, 15.751292, 15.47425, 16.58225, 16.782208, 15.201958, 16.546792, 16.020625, 15.576875, 15.877625, 19.186875, 17.068459, 18.025041, 26.832041, 25.850709, 16.720167, 24.154875, 24.616, 24.972542, 20.424958, 15.382167, 15.851, 15.724167, 14.477333, 14.929708, 14.404541, 20.348584, 14.901125, 18.95275, 16.720416, 14.206584, 15.988625, 15.733875, 14.927375, 20.156208, 19.70725, 22.303209, 15.622291, 20.573583, 26.776166, 39.480375, 28.445792, 21.626875, 15.891166, 15.663875, 20.060459, 17.189375, 19.493666, 13.339709, 14.050708, 15.8595, 20.884125, 14.062042, 18.875416, 16.350458, 18.090833, 18.700708, 21.396209, 16.962583, 15.347542, 12.351, 17.1245, 14.355125, 15.123709, 16.341, 15.186542, 14.048375, 16.591292, 18.479625, 14.493042, 17.489834, 24.695958, 14.08675, 12.543458, 16.563292, 14.276166, 20.068333, 12.348583, 38.542, 16.903, 13.694416, 14.302125, 27.75175, 20.219125, 15.202334, 16.425708, 17.679209, 17.796584, 15.869583 ],
+  "response" : {
+    "content" : [ {
+      "id" : 19717,
+      "name" : "W4-product-9716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 18717,
+      "name" : "W4-product-8716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 17717,
+      "name" : "W4-product-7716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 16717,
+      "name" : "W4-product-6716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 15717,
+      "name" : "W4-product-5716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 14717,
+      "name" : "W4-product-4716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 13717,
+      "name" : "W4-product-3716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 12717,
+      "name" : "W4-product-2716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 11717,
+      "name" : "W4-product-1716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 10717,
+      "name" : "W4-product-716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 19507,
+      "name" : "W4-product-9506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 18507,
+      "name" : "W4-product-8506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 17507,
+      "name" : "W4-product-7506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 16507,
+      "name" : "W4-product-6506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 15507,
+      "name" : "W4-product-5506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 14507,
+      "name" : "W4-product-4506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 13507,
+      "name" : "W4-product-3506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 12507,
+      "name" : "W4-product-2506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 11507,
+      "name" : "W4-product-1506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 10507,
+      "name" : "W4-product-506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    } ],
+    "page" : 0,
+    "size" : 20,
+    "totalElements" : 1000,
+    "totalPages" : 50
+  }
+}

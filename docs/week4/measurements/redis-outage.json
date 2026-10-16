@@ -1,0 +1,9 @@
+{
+  "redisImage" : "redis:7.2",
+  "stoppedHttpMs" : 226.596167,
+  "pausedHttpMs" : 220.810709,
+  "readFailures" : 2.0,
+  "evictFailures" : 1.0,
+  "persistedOldSnapshotObserved" : true,
+  "expiredRefillAndHitEqualCurrent" : true
+}

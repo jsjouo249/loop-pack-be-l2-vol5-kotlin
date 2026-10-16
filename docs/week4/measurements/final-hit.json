@@ -1,0 +1,281 @@
+{
+  "phase" : "final",
+  "mode" : "hit",
+  "database" : "8.0.46",
+  "products" : 10000,
+  "likes" : 45000,
+  "brandOrdinal" : 7,
+  "brandId" : 1007,
+  "url" : "http://127.0.0.1:51473/api/v1/products?brandId=1007&sort=price_asc&page=0&size=20",
+  "warmup" : 20,
+  "requests" : 100,
+  "concurrency" : 1,
+  "sqlPerRequest" : 1,
+  "observedSqlCounts" : [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+  "observedHits" : 100.0,
+  "observedMisses" : 0.0,
+  "dbListLoads" : 0.0,
+  "preparationMs" : [ 3.75E-4, 2.5E-4, 2.92E-4, 2.08E-4, 2.5E-4, 1.67E-4, 2.5E-4, 2.09E-4, 2.08E-4, 4.17E-4, 2.08E-4, 2.5E-4, 2.5E-4, 1.66E-4, 2.5E-4, 2.08E-4, 2.09E-4, 2.92E-4, 3.34E-4, 3.75E-4, 2.91E-4, 1.67E-4, 2.08E-4, 1.66E-4, 3.33E-4, 1.66E-4, 2.5E-4, 2.5E-4, 2.5E-4, 2.5E-4, 3.34E-4, 2.08E-4, 1.66E-4, 2.5E-4, 2.09E-4, 2.5E-4, 2.5E-4, 1.66E-4, 2.08E-4, 2.5E-4, 2.92E-4, 3.75E-4, 3.75E-4, 3.33E-4, 4.17E-4, 2.5E-4, 2.08E-4, 2.5E-4, 2.08E-4, 3.75E-4, 1.66E-4, 2.92E-4, 2.5E-4, 3.75E-4, 1.67E-4, 2.08E-4, 2.92E-4, 2.5E-4, 2.5E-4, 2.5E-4, 8.4E-5, 2.08E-4, 2.5E-4, 1.67E-4, 2.92E-4, 3.75E-4, 1.67E-4, 1.25E-4, 2.92E-4, 2.08E-4, 2.92E-4, 2.92E-4, 2.5E-4, 2.5E-4, 2.09E-4, 1.66E-4, 2.5E-4, 3.33E-4, 3.33E-4, 3.33E-4, 2.5E-4, 2.92E-4, 2.09E-4, 4.16E-4, 3.34E-4, 1.66E-4, 2.5E-4, 2.5E-4, 1.67E-4, 2.92E-4, 3.75E-4, 2.91E-4, 3.33E-4, 1.67E-4, 1.66E-4, 2.5E-4, 5.0E-4, 3.33E-4, 3.33E-4, 2.5E-4 ],
+  "sql" : [ "select pje1_0.id from products pje1_0 join brands bje1_0 on bje1_0.id=pje1_0.brand_id where pje1_0.id in (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) and pje1_0.deleted_at is null and bje1_0.deleted_at is null" ],
+  "plans" : [ {
+    "sql" : "select pje1_0.id from products pje1_0 join brands bje1_0 on bje1_0.id=pje1_0.brand_id where pje1_0.id in (19717,18717,17717,16717,15717,14717,13717,12717,11717,10717,19507,18507,17507,16507,15507,14507,13507,12507,11507,10507) and pje1_0.deleted_at is null and bje1_0.deleted_at is null",
+    "explain" : [ {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "pje1_0",
+      "type" : "range",
+      "possible_keys" : "PRIMARY,idx_products_active_latest,idx_products_active_brand_latest,idx_products_active_price,idx_products_active_brand_price,idx_products_active_likes,idx_products_active_brand_likes,fk_products_brand",
+      "key" : "PRIMARY",
+      "key_len" : "8",
+      "rows" : 20,
+      "filtered" : 50.0,
+      "Extra" : "Using where"
+    }, {
+      "id" : 1,
+      "select_type" : "SIMPLE",
+      "table" : "bje1_0",
+      "type" : "eq_ref",
+      "possible_keys" : "PRIMARY,IDX4do6ilbmknwpbf9p6h92rjgky",
+      "key" : "PRIMARY",
+      "key_len" : "8",
+      "ref" : "loopers.pje1_0.brand_id",
+      "rows" : 1,
+      "filtered" : 100.0,
+      "Extra" : "Using where"
+    } ],
+    "analyze" : [ {
+      "EXPLAIN" : "-> Nested loop inner join  (cost=12.5 rows=10) (actual time=0.0157..0.0394 rows=20 loops=1)\n    -> Filter: ((pje1_0.id in (19717,18717,17717,16717,15717,14717,13717,12717,11717,10717,19507,18507,17507,16507,15507,14507,13507,12507,11507,10507)) and (pje1_0.deleted_at is null))  (cost=9.03 rows=10) (actual time=0.0113..0.0277 rows=20 loops=1)\n        -> Index range scan on pje1_0 using PRIMARY over (id = 10507) OR (id = 10717) OR (18 more)  (cost=9.03 rows=20) (actual time=0.0101..0.0252 rows=20 loops=1)\n    -> Filter: (bje1_0.deleted_at is null)  (cost=0.26 rows=1) (actual time=317e-6..369e-6 rows=1 loops=20)\n        -> Single-row index lookup on bje1_0 using PRIMARY (id=pje1_0.brand_id)  (cost=0.26 rows=1) (actual time=202e-6..233e-6 rows=1 loops=20)\n"
+    } ]
+  } ],
+  "p50Ms" : 8.982333,
+  "p95Ms" : 11.940458,
+  "p99Ms" : 15.237916,
+  "latenciesMs" : [ 11.181708, 11.621917, 11.183958, 9.472708, 8.0765, 9.5005, 8.36875, 7.7655, 9.428459, 8.770959, 7.240583, 9.657459, 9.779083, 6.502333, 7.617, 7.2455, 10.072208, 9.137625, 9.541458, 7.549334, 10.378958, 9.1385, 8.6675, 10.08625, 8.011833, 7.386625, 8.508417, 12.051584, 9.391583, 6.981583, 8.740833, 7.633375, 7.123333, 10.128542, 10.422333, 9.981167, 9.925375, 7.167583, 9.564958, 9.961625, 8.718542, 11.079083, 10.731167, 10.610583, 8.820291, 11.02375, 9.765083, 6.725083, 9.860083, 7.749917, 9.057708, 6.970084, 14.104916, 9.337042, 10.219958, 15.237916, 9.296, 8.130666, 11.77975, 11.788667, 13.788125, 7.189292, 7.619958, 8.9005, 9.540667, 9.085791, 7.282208, 7.688166, 6.653625, 15.730125, 9.7335, 8.130875, 7.881917, 7.754333, 7.271125, 7.14125, 8.982333, 10.254542, 8.57675, 10.854584, 11.940458, 7.643083, 8.612083, 9.197458, 9.225083, 7.747584, 8.691375, 8.481875, 8.588334, 10.459125, 8.4985, 10.170375, 8.234417, 7.949166, 8.37425, 11.321, 9.234541, 8.278958, 7.886042, 8.108292 ],
+  "response" : {
+    "content" : [ {
+      "id" : 19717,
+      "name" : "W4-product-9716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 18717,
+      "name" : "W4-product-8716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 17717,
+      "name" : "W4-product-7716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 16717,
+      "name" : "W4-product-6716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 15717,
+      "name" : "W4-product-5716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 14717,
+      "name" : "W4-product-4716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 13717,
+      "name" : "W4-product-3716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 12717,
+      "name" : "W4-product-2716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 11717,
+      "name" : "W4-product-1716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 10717,
+      "name" : "W4-product-716",
+      "price" : 400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 19507,
+      "name" : "W4-product-9506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 18507,
+      "name" : "W4-product-8506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 17507,
+      "name" : "W4-product-7506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 16507,
+      "name" : "W4-product-6506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 15507,
+      "name" : "W4-product-5506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 14507,
+      "name" : "W4-product-4506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 13507,
+      "name" : "W4-product-3506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 12507,
+      "name" : "W4-product-2506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 11507,
+      "name" : "W4-product-1506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    }, {
+      "id" : 10507,
+      "name" : "W4-product-506",
+      "price" : 1400,
+      "stock" : 50,
+      "brand" : {
+        "id" : 1007,
+        "name" : "W4-brand-07"
+      },
+      "likeCount" : 6,
+      "createdAt" : "2026-01-01T00:00:00Z"
+    } ],
+    "page" : 0,
+    "size" : 20,
+    "totalElements" : 1000,
+    "totalPages" : 50
+  }
+}

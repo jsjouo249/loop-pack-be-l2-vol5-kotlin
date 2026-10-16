@@ -1,0 +1,8 @@
+{
+  "namespaceKeys" : 501,
+  "unrelatedKeys" : 1000,
+  "scanCommands" : 22,
+  "deleteCommands" : 3,
+  "deletedKeys" : 501.0,
+  "elapsedMs" : 18.878041
+}

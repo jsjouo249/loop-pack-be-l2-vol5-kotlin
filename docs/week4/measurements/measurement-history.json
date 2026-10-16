@@ -1,0 +1,21 @@
+{
+  "note": "Observed summaries before the final timer alignment; raw latest runs are final-*.json. Do not infer significance from one local run.",
+  "earlierFinal": {
+    "dbOnly": {
+      "p50Ms": 14.351209,
+      "p95Ms": 19.308375,
+      "p99Ms": 21.4675
+    },
+    "miss": {
+      "p50Ms": 20.428,
+      "p95Ms": 30.86775,
+      "p99Ms": 34.482583
+    },
+    "hit": {
+      "p50Ms": 11.283291,
+      "p95Ms": 20.836792,
+      "p99Ms": 26.724958
+    },
+    "evictionMs": 6.560042
+  }
+}

@@ -14,6 +14,7 @@ import com.loopers.domain.order.PaymentResult
 import com.loopers.domain.point.PointAccountRepository
 import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.user.UserRepository
+import com.loopers.application.product.ProductListInvalidation
 import com.loopers.application.transaction.RetryingWriteExecutor
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
@@ -43,6 +44,7 @@ class OrderApplicationService(
     private val users: UserRepository,
     private val points: PointAccountRepository,
     private val writes: RetryingWriteExecutor,
+    private val invalidation: ProductListInvalidation,
 ) {
     fun create(userId: Long, inputs: List<OrderItemInput>): OrderResult {
         requireUser(userId)
@@ -86,7 +88,7 @@ class OrderApplicationService(
         pointAccount.pay(order.totalAmount.amount)
         points.saveBalance(pointAccount)
         order.confirm()
-        result(orders.saveConfirmation(order))
+        result(orders.saveConfirmation(order)).also { invalidation.afterCommit() }
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)

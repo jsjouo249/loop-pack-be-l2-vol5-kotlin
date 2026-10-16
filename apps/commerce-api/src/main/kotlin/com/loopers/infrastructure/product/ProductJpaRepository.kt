@@ -1,5 +1,8 @@
 package com.loopers.infrastructure.product
 
+import com.loopers.domain.product.ProductSort
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -24,4 +27,28 @@ interface ProductJpaRepository : JpaRepository<ProductJpaEntity, Long> {
     fun countByDeletedAtIsNull(): Long
 
     fun countByBrandIdAndDeletedAtIsNull(brandId: Long): Long
+}
+
+internal fun ProductJpaRepository.activePageIds(
+    brandId: Long?,
+    offset: Int,
+    limit: Int,
+    sort: ProductSort,
+): List<Long> {
+    val ordering = when (sort) {
+        ProductSort.PRICE_ASC -> Sort.by(
+            Sort.Order.asc("price"),
+            Sort.Order.desc("id"),
+        )
+        ProductSort.LIKES_DESC -> Sort.by(
+            Sort.Order.desc("likeCount"),
+            Sort.Order.desc("id"),
+        )
+        ProductSort.LATEST -> Sort.by(
+            Sort.Order.desc("createdAt"),
+            Sort.Order.desc("id"),
+        )
+    }
+    val pageable = PageRequest.of(offset / limit, limit, ordering)
+    return if (brandId == null) findActivePageIds(pageable) else findActivePageIdsByBrandId(brandId, pageable)
 }

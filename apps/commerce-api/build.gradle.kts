@@ -25,3 +25,18 @@ dependencies {
     testImplementation(testFixtures(project(":modules:jpa")))
     testImplementation(testFixtures(project(":modules:redis")))
 }
+
+// Performance measurements are explicit runs, separate from deterministic regression checks.
+tasks.test { useJUnitPlatform { excludeTags("performance") } }
+
+tasks.register<Test>("week4Benchmark") {
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { includeTags("performance") }
+    systemProperty("spring.profiles.active", "test")
+    systemProperty("user.timezone", "Asia/Seoul")
+    systemProperty("week4.phase", providers.gradleProperty("week4Phase").getOrElse("final"))
+    systemProperty("week4.output", rootProject.file("docs/week4/measurements").absolutePath)
+    jvmArgs("-Xshare:off")
+    outputs.upToDateWhen { false }
+}
