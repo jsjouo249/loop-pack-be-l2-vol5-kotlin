@@ -1,0 +1,9 @@
+{
+  "tests": 1,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "exitCode": 0,
+  "command": ":apps:commerce-api:test --tests '*ArchitectureTest'",
+  "timestamp": "2026-10-15T01:02:59.672Z"
+}

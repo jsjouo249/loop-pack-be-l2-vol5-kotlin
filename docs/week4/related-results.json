@@ -1,0 +1,60 @@
+{
+  "tests": 33,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "suites": 7,
+  "exitCode": 0,
+  "command": ":apps:commerce-api:test --tests '*ProductListCache*Test' --tests '*ReviewFixRegressionTest' --tests '*AggregateCoordinationTest'",
+  "suiteResults": [
+    {
+      "name": "com.loopers.application.cache.RedisProductListCacheFailureTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheOutageTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.ReviewFixRegressionTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheRaceTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheHitTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.transaction.AggregateCoordinationTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "com.loopers.application.cache.ProductListCacheContractTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}

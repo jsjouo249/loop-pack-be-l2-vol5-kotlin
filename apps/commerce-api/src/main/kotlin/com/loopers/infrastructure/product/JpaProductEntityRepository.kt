@@ -3,8 +3,6 @@ package com.loopers.infrastructure.product
 import com.loopers.domain.product.ProductSort
 import com.loopers.infrastructure.common.JpaWriteOperations
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
@@ -95,18 +93,7 @@ class JpaProductEntityRepository(
     override fun existsActiveByBrandId(brandId: Long): Boolean = jpa.existsByBrandIdAndDeletedAtIsNull(brandId)
 
     override fun findActivePage(brandId: Long?, offset: Int, limit: Int, sort: ProductSort): List<ProductEntity> {
-        val ordering = when (sort) {
-            ProductSort.PRICE_ASC -> Sort.by(Sort.Order.asc("price"), Sort.Order.desc("id"))
-            ProductSort.LIKES_DESC -> Sort.by(Sort.Order.desc("likeCount"), Sort.Order.desc("id"))
-            ProductSort.LATEST -> Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))
-        }
-        val pageable = PageRequest.of(offset / limit, limit, ordering)
-        // ID만 정렬/페이지하여 covering index를 사용하고, 응답에 필요한 행만 한 번에 가져온다.
-        val ids = if (brandId == null) {
-            jpa.findActivePageIds(pageable)
-        } else {
-            jpa.findActivePageIdsByBrandId(brandId, pageable)
-        }
+        val ids = jpa.activePageIds(brandId, offset, limit, sort)
         if (ids.isEmpty()) return emptyList()
         val found = jpa.findByIdInAndDeletedAtIsNull(ids).associateBy { it.id }
         return ids.map { checkNotNull(found[it]).toEntity() }

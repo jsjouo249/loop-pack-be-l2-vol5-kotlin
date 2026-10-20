@@ -31,12 +31,13 @@ class ProductApplicationService(
     private val products: ProductRepository,
     private val brands: BrandRepository,
     private val writes: RetryingWriteExecutor,
+    private val invalidation: ProductListInvalidation,
 ) {
     fun create(brandId: Long, name: String, price: Long, stock: Int): ProductResult = writes.execute("product.create") {
         positiveId(brandId)
         // 브랜드 삭제와 같은 행을 잠가 등록이 먼저면 삭제 대상에 포함되고, 삭제가 먼저면 등록을 거절한다.
         val brand = brands.findActiveForUpdate(brandId) ?: throw CommerceException(CommerceFailure.BRAND_NOT_FOUND)
-        result(products.create(Product(brandId, name, price, stock)), brand.name)
+        result(products.create(Product(brandId, name, price, stock)), brand.name).also { invalidation.afterCommit() }
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
@@ -62,7 +63,9 @@ class ProductApplicationService(
         val product = products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         product.changeDetails(name, price)
         // 지정 필드만 갱신하며, 조회 이후 삭제된 경우도 UPDATE의 활성 조건으로 거절한다.
-        result(products.updateDetails(product) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND))
+        result(products.updateDetails(product) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)).also {
+            invalidation.afterCommit()
+        }
     }
 
     // 관리자는 최종 수량을 지정한다. UPDATE의 쓰기 잠금으로 주문 차감과 순서가 정해진다.
@@ -70,7 +73,9 @@ class ProductApplicationService(
         positiveId(id)
         val product = products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         product.adjustStock(stock)
-        result(products.setStock(product) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND))
+        result(products.setStock(product) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)).also {
+            invalidation.afterCommit()
+        }
     }
 
     fun delete(id: Long): Unit = writes.execute("product.delete") {
@@ -78,6 +83,7 @@ class ProductApplicationService(
         val product = products.findActive(id) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
         product.delete()
         if (!products.markDeleted(product)) throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
+        invalidation.afterCommit()
     }
 
     private fun result(product: Product): ProductResult =

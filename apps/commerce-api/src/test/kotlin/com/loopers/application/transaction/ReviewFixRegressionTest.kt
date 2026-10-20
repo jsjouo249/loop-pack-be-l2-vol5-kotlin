@@ -27,6 +27,8 @@ class ReviewFixRegressionTest : CommerceTransactionTestSupport() {
 
     @Autowired private lateinit var productRepository: ProductRepository
 
+    @MockitoSpyBean private lateinit var listQuery: com.loopers.domain.product.ProductListQuery
+
     @MockitoSpyBean private lateinit var likeStorage: ProductLikeEntityRepository
 
     @Test
@@ -139,7 +141,7 @@ class ReviewFixRegressionTest : CommerceTransactionTestSupport() {
             val result = invocation.callRealMethod()
             elsewhere { brands.delete(brand) }
             result
-        }.whenever(productStorage).findActivePage(anyOrNull(), any(), any(), any())
+        }.whenever(listQuery).findPage(anyOrNull(), any(), any(), any())
         mvc.perform(get("/api/v1/products"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.totalElements").value(1))
