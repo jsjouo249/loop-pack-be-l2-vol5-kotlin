@@ -53,6 +53,19 @@ class JpaProductEntityRepository(
         }
     }
 
+    override fun restoreReservedStock(changes: Collection<ProductStockChange>) {
+        writes.flush()
+        changes.sortedBy { it.id }.forEach { change ->
+            check(
+                writes.update(
+                    "update products set stock = :stock, updated_at = current_timestamp(6) where id = :id",
+                "stock" to change.stock, "id" to change.id,
+                ) == 1,
+            )
+            writes.current(ProductJpaEntity::class.java, change.id)
+        }
+    }
+
     private fun updateStock(change: ProductStockChange): Int = writes.update(
         "update products set updated_at = if(stock <> :stock, current_timestamp(6), updated_at), " +
             "stock = :stock where id = :id and deleted_at is null",

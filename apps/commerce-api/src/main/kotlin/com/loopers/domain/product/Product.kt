@@ -46,6 +46,12 @@ class Product private constructor(
         stock = stock.decrease(quantity)
     }
 
+    /** A previously reserved quantity must also be returnable after logical deletion. */
+    fun releaseReservation(quantity: Int) {
+        require(quantity > 0)
+        stock = Stock(Math.addExact(stock.remaining, quantity))
+    }
+
     fun assertCanDecrease(quantity: Int) {
         assertActive()
         stock.decrease(quantity)

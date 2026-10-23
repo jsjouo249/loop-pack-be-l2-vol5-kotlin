@@ -32,6 +32,8 @@ interface ProductEntityRepository {
 
     fun saveStockChanges(changes: Collection<ProductStockChange>)
 
+    fun restoreReservedStock(changes: Collection<ProductStockChange>)
+
     fun markDeleted(change: ProductDeletion): Boolean
 
     fun markDeletedAll(changes: Collection<ProductDeletion>)

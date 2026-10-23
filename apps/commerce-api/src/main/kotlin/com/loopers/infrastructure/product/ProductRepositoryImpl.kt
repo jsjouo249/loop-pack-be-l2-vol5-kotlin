@@ -26,6 +26,9 @@ class ProductRepositoryImpl(private val repository: ProductEntityRepository) : P
         repository.saveStockChanges(products.map { ProductStockChange(it.id, it.stock.remaining) })
     }
 
+    override fun restoreReservedStock(changes: Collection<Product>) =
+        repository.restoreReservedStock(changes.map { ProductStockChange(it.id, it.stock.remaining) })
+
     override fun markDeleted(product: Product): Boolean =
         repository.markDeleted(ProductDeletion(product.id, requireNotNull(product.deletedAt)))
 

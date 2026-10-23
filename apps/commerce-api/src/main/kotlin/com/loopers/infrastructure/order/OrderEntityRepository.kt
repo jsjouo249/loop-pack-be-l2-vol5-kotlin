@@ -3,6 +3,7 @@ package com.loopers.infrastructure.order
 import com.loopers.domain.commerce.EntityState
 import com.loopers.domain.order.OrderStatus
 import com.loopers.domain.order.PaymentResult
+import com.loopers.domain.order.PaymentMethod
 import java.time.ZonedDateTime
 
 data class OrderItemEntity(
@@ -22,6 +23,7 @@ data class OrderEntity(
     val paymentResult: PaymentResult?,
     val confirmedAt: ZonedDateTime?,
     val state: EntityState,
+    val paymentMethod: PaymentMethod? = null,
 )
 
 data class OrderConfirmation(
@@ -32,12 +34,23 @@ data class OrderConfirmation(
     val confirmedAt: ZonedDateTime,
 )
 
+data class OrderPaymentChange(
+    val id: Long,
+    val status: OrderStatus,
+    val paymentMethod: PaymentMethod?,
+    val paymentAmount: Long?,
+    val paymentResult: PaymentResult?,
+    val confirmedAt: ZonedDateTime?,
+)
+
 interface OrderEntityRepository {
     fun create(entity: OrderEntity): OrderEntity
 
     fun findForUpdate(id: Long): OrderEntity?
 
     fun saveConfirmation(change: OrderConfirmation): OrderEntity
+
+    fun savePaymentState(change: OrderPaymentChange): OrderEntity
 
     fun find(id: Long): OrderEntity?
 

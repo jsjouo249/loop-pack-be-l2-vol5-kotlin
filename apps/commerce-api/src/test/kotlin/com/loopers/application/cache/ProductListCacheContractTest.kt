@@ -1,5 +1,6 @@
 package com.loopers.application.cache
 
+import com.loopers.confirmWithTestCard
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.loopers.application.like.ProductLikeApplicationService
@@ -159,7 +160,7 @@ class ProductListCacheContractTest : CommerceTransactionTestSupport() {
             { brands.update(brand, "이름") },
             { likes.like(buyer, product) },
             { likes.unlike(buyer, product) },
-            { orders.confirm(buyer, order) },
+            { orders.confirmWithTestCard(buyer, order) },
             { products.delete(product) },
             { brands.delete(brand) },
         )
@@ -277,14 +278,14 @@ class ProductListCacheContractTest : CommerceTransactionTestSupport() {
             if (++calls == 1) throw CannotAcquireLockException("injected after SQL", SQLException("deadlock", "40001", 1213))
             Unit
         }.whenever(invalidation).afterCommit()
-        orders.confirm(buyer, order)
+        orders.confirmWithTestCard(buyer, order)
         tx {
             em.flush()
             em.clear()
             assertThat(stock(id)).isEqualTo(2)
-            assertThat(balance(buyer)).isEqualTo(900)
+            assertThat(balance(buyer)).isEqualTo(1000)
         }
-        assertThat(observer.events.filter { it.kind == "attempt" }.map { it.outcome }).containsExactly("DEADLOCK", "SUCCESS")
+        assertThat(observer.events.filter { it.kind == "attempt" }.map { it.outcome }).containsExactly("DEADLOCK", "SUCCESS", "SUCCESS")
         verify(cache, times(1)).evictAll()
         assertThat(redis.keys("products:v1:list:*")).isEmpty()
     }

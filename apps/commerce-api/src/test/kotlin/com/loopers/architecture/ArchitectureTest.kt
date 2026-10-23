@@ -44,6 +44,8 @@ class ArchitectureTest {
             "..domain.like..",
             "..domain.order..",
             "..domain.commerce..",
+            "..domain.payment..",
+            "..domain.inventory..",
         ).should().dependOnClassesThat()
             .resideInAnyPackage("jakarta.persistence..", "org.hibernate..")
             .check(classes)
@@ -69,7 +71,7 @@ class ArchitectureTest {
             .should().dependOnClassesThat().resideInAPackage("..infrastructure..")
             .check(classes)
 
-        val aggregateNames = setOf("brand", "product", "user", "point", "like", "order")
+        val aggregateNames = setOf("brand", "product", "user", "point", "like", "order", "payment", "inventory")
         val repositoryAdapters = classes.filter {
             it.simpleName.endsWith("RepositoryImpl") &&
                 it.packageName.substringAfter(".infrastructure.").substringBefore('.') in aggregateNames

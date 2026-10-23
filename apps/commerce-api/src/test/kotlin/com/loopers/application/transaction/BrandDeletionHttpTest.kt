@@ -1,5 +1,6 @@
 package com.loopers.application.transaction
 
+import com.loopers.confirmWithTestCard
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -20,7 +21,7 @@ class BrandDeletionHttpTest : CommerceTransactionTestSupport() {
         val product = products.create(brand, "상품", 1000, 5).id
         val zero = products.create(brand, "품절", 1000, 0).id
         val paid = draft(buyer, product)
-        orders.confirm(buyer, paid)
+        orders.confirmWithTestCard(buyer, paid)
         val pending = draft(buyer, product)
         val paidBefore = orders.getForUser(buyer, paid)
         mvc.perform(post("/api/v1/products/$product/likes").header("X-USER-ID", buyer)).andExpect(status().isOk)
@@ -28,7 +29,7 @@ class BrandDeletionHttpTest : CommerceTransactionTestSupport() {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.meta.result").value("SUCCESS"))
         assertThat(orders.getForUser(buyer, paid)).isEqualTo(paidBefore)
-        assertThat(balance(buyer)).isEqualTo(9000)
+        assertThat(balance(buyer)).isEqualTo(10_000)
         assertThat(number("select count(*) from products where brand_id=? and deleted_at is not null", brand)).isEqualTo(2)
         assertThat(stock(zero)).isZero()
         assertThat(number("select count(*) from product_likes where product_id=?", product)).isEqualTo(1)
@@ -42,7 +43,7 @@ class BrandDeletionHttpTest : CommerceTransactionTestSupport() {
             .content("""{"items":[{"productId":$product,"quantity":1}]}"""),
         )
             .andExpect(status().isNotFound)
-        mvc.perform(post("/api/v1/orders/$pending/confirm").header("X-USER-ID", buyer))
+        mvc.perform(post("/api/v1/orders/$pending/confirm").header("X-USER-ID", buyer).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(pending)))
             .andExpect(status().isNotFound).andExpect(jsonPath("$.meta.errorCode").value("PRODUCT_NOT_FOUND"))
         mvc.perform(
             put("/api-admin/v1/products/$product").with(user("admin").roles("ADMIN")).with(csrf())
@@ -57,7 +58,7 @@ class BrandDeletionHttpTest : CommerceTransactionTestSupport() {
         mvc.perform(delete("/api/v1/products/$product/likes").header("X-USER-ID", buyer)).andExpect(status().isOk)
         assertThat(number("select count(*) from product_likes where product_id=?", product)).isZero()
         assertThat(stock(product)).isEqualTo(4)
-        assertThat(balance(buyer)).isEqualTo(9000)
+        assertThat(balance(buyer)).isEqualTo(10_000)
     }
 
     @Test
@@ -70,7 +71,7 @@ class BrandDeletionHttpTest : CommerceTransactionTestSupport() {
         mvc.perform(delete("/api-admin/v1/brands/$brand").with(csrf())).andExpect(status().isForbidden)
         mvc.perform(delete("/api-admin/v1/brands/$brand").with(user("buyer").roles("USER")).with(csrf()))
             .andExpect(status().isForbidden).andExpect(jsonPath("$.meta.errorCode").value("ADMIN_FORBIDDEN"))
-        mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", other))
+        mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", other).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(order)))
             .andExpect(status().isForbidden).andExpect(jsonPath("$.meta.errorCode").value("ORDER_NOT_OWNED"))
         assertThat(number("select count(*) from brands where id=? and deleted_at is null", brand)).isEqualTo(1)
         assertThat(stock(product)).isEqualTo(5)

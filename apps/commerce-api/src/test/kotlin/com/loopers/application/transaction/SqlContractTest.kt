@@ -1,5 +1,6 @@
 package com.loopers.application.transaction
 
+import com.loopers.confirmWithTestCard
 import org.assertj.core.api.Assertions.assertThat
 import org.hibernate.resource.jdbc.spi.StatementInspector
 import org.junit.jupiter.api.Test
@@ -50,7 +51,7 @@ class SqlContractTest : CommerceTransactionTestSupport() {
     }
 
     @Test
-    fun `confirmation locks order account then products by primary key and only updates confirmation fields`() {
+    fun `confirmation locks order attempt then products by primary key and only updates confirmation fields`() {
         val buyer = buyer(10_000)
         val brand = brands.create("브랜드").id
         val first = products.create(brand, "첫", 1000, 5).id
@@ -68,17 +69,17 @@ class SqlContractTest : CommerceTransactionTestSupport() {
             invocation.callRealMethod()
         }.whenever(productStorage).findActiveForUpdate(org.mockito.kotlin.any())
         CapturedSql.statements.clear()
-        orders.confirm(buyer, order)
+        orders.confirmWithTestCard(buyer, order)
         assertThat(lockedProducts).containsExactly(first, second)
         val statements = CapturedSql.statements.toList()
         val lockedTables = statements.filter { it.contains("for update") }.map { sql ->
             Regex("from ([a-z_]+)").find(sql)!!.groupValues[1]
         }
         assertThat(lockedTables.first()).isEqualTo("orders")
-        assertThat(lockedTables.indexOf("point_balances")).isLessThan(lockedTables.indexOf("products"))
+        assertThat(lockedTables).doesNotContain("point_balances")
         assertThat(lockedTables).doesNotContain("users", "brands")
-        val confirmation = statements.single { it.startsWith("update orders ") }
-        assertThat(confirmation).doesNotContain("total_amount =", "user_id =", "created_at =")
+        val confirmation = statements.last { it.startsWith("update orders ") }
+        assertThat(confirmation).doesNotContainPattern("(total_amount|user_id|created_at)\\s*=")
         assertThat(statements).noneMatch { it.startsWith("update order_items ") || it.startsWith("delete from order_items") }
         println("CONFIRMATION_SQL $confirmation")
     }
@@ -93,7 +94,7 @@ class SqlContractTest : CommerceTransactionTestSupport() {
         products.adjustStock(product, 3)
         brands.update(brand, "변경")
         points.charge(buyer, 2000)
-        orders.confirm(buyer, draft(buyer, product))
+        orders.confirmWithTestCard(buyer, draft(buyer, product))
         likes.like(buyer, product)
         likes.unlike(buyer, product)
         products.delete(product)
@@ -104,7 +105,8 @@ class SqlContractTest : CommerceTransactionTestSupport() {
             "product.stock",
             "brand.rename",
             "point.charge",
-            "order.confirm",
+            "payment.prepare",
+            "payment.apply",
             "product.delete",
             "brand.delete",
             "product.like",
