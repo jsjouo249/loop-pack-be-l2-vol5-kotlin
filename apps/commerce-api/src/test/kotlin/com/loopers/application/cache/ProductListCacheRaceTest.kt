@@ -1,5 +1,6 @@
 package com.loopers.application.cache
 
+import com.loopers.confirmWithTestCard
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.loopers.application.product.CustomerProductQueryService
@@ -219,14 +220,14 @@ class ProductListCacheRaceTest : CommerceTransactionTestSupport() {
         assertThat(mapper.readTree(otherBalance.contentAsString)["data"]["userId"].asLong()).isEqualTo(stranger)
         assertThat(mapper.readTree(otherBalance.contentAsString)["data"]["balance"].asLong()).isZero()
         products.update(id, "더 최신", 300)
-        orders.confirm(buyer, order)
+        orders.confirmWithTestCard(buyer, order)
         assertThat(orders.getForUser(buyer, order).paymentAmount).isEqualTo(200)
-        assertThat(balance(buyer)).isEqualTo(800)
+        assertThat(balance(buyer)).isEqualTo(1000)
         assertThat(stock(id)).isEqualTo(2)
         val rejected = draft(buyer, id)
         products.adjustStock(id, 0)
-        org.junit.jupiter.api.assertThrows<com.loopers.domain.product.InsufficientStockException> { orders.confirm(buyer, rejected) }
-        assertThat(balance(buyer)).isEqualTo(800)
+        org.junit.jupiter.api.assertThrows<com.loopers.domain.product.InsufficientStockException> { orders.confirmWithTestCard(buyer, rejected) }
+        assertThat(balance(buyer)).isEqualTo(1000)
         assertThat(stock(id)).isZero()
     }
 
@@ -236,7 +237,7 @@ class ProductListCacheRaceTest : CommerceTransactionTestSupport() {
         doThrow(IllegalStateException("deletion invalidation failed")).whenever(cache).evictAll()
         products.delete(id)
         assertThat(browse()["content"].size()).isZero()
-        val failure = org.junit.jupiter.api.assertThrows<com.loopers.domain.commerce.CommerceException> { orders.confirm(buyer, order) }
+        val failure = org.junit.jupiter.api.assertThrows<com.loopers.domain.commerce.CommerceException> { orders.confirmWithTestCard(buyer, order) }
         assertThat(failure.reason).isEqualTo(com.loopers.domain.commerce.CommerceFailure.PRODUCT_NOT_FOUND)
         assertThat(balance(buyer)).isEqualTo(1000)
     }

@@ -1,5 +1,6 @@
 package com.loopers.application.transaction
 
+import com.loopers.confirmWithTestCard
 import com.loopers.application.order.OrderItemInput
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -43,15 +44,15 @@ class WriteRollbackTest : CommerceTransactionTestSupport() {
         val before = snapshot()
         var observedSql = false
         doAnswer {
-            // 재고와 잔액의 실제 SQL 반영을 확인하고 주문 확정 저장 직전에 실패시킨다.
+            // 예약과 재고의 실제 SQL 반영을 확인하고 주문 확정 저장 직전에 실패시킨다.
             em.flush()
             assertThat(stock(first)).isEqualTo(3)
             assertThat(stock(second)).isEqualTo(2)
-            assertThat(balance(buyer)).isEqualTo(6000)
+            assertThat(balance(buyer)).isEqualTo(10_000)
             observedSql = true
             throw InjectedStorageFailure()
-        }.whenever(orderStorage).saveConfirmation(any())
-        assertThrows<InjectedStorageFailure> { orders.confirm(buyer, order) }
+        }.whenever(orderStorage).savePaymentState(any())
+        assertThrows<InjectedStorageFailure> { orders.confirmWithTestCard(buyer, order) }
         assertThat(observedSql).isTrue()
         assertThat(tx { snapshot() }).isEqualTo(before)
     }
@@ -84,6 +85,9 @@ class WriteRollbackTest : CommerceTransactionTestSupport() {
         "orders",
         "order_items",
         "product_likes",
+        "payment_attempts",
+        "stock_reservations",
+        "payment_issues",
     ).associateWith { table -> jdbc.queryForList("select * from $table order by 1") }
 }
 

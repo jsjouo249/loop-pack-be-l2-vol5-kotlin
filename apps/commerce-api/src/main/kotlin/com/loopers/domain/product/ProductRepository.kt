@@ -15,6 +15,8 @@ interface ProductRepository {
 
     fun saveStockChanges(products: Collection<Product>)
 
+    fun restoreReservedStock(changes: Collection<Product>)
+
     fun markDeleted(product: Product): Boolean
 
     fun markDeletedAll(products: Collection<Product>)

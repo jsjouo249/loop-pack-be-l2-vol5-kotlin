@@ -1,0 +1,105 @@
+{
+  "tests": 51,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "exitCode": 0,
+  "suites": [
+    {
+      "name": "com.loopers.application.transaction.AggregateCoordinationTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:02.093Z"
+    },
+    {
+      "name": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:02.652Z"
+    },
+    {
+      "name": "com.loopers.architecture.ArchitectureTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:02.699Z"
+    },
+    {
+      "name": "com.loopers.domain.brand.BrandTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.229Z"
+    },
+    {
+      "name": "예시 모델을 생성할 때,",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.235Z"
+    },
+    {
+      "name": "com.loopers.domain.order.OrderTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.253Z"
+    },
+    {
+      "name": "com.loopers.domain.order.PgOrderTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.264Z"
+    },
+    {
+      "name": "com.loopers.domain.payment.PaymentAttemptTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.268Z"
+    },
+    {
+      "name": "com.loopers.domain.point.PointAccountTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.281Z"
+    },
+    {
+      "name": "com.loopers.domain.product.ProductTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.295Z"
+    },
+    {
+      "name": "com.loopers.domain.product.StockTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.300Z"
+    },
+    {
+      "name": "com.loopers.payment.PaymentProviderContractTest",
+      "tests": "8",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-23T06:20:05.312Z"
+    }
+  ]
+}

@@ -7,6 +7,8 @@ interface OrderRepository {
 
     fun saveConfirmation(order: Order): Order
 
+    fun savePaymentState(order: Order): Order
+
     fun find(id: Long): Order?
 
     fun findPage(userId: Long?, offset: Int, limit: Int): List<Order>

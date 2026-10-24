@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
+@org.springframework.context.annotation.Import(com.loopers.PaymentTestConfiguration::class)
 @AutoConfigureMockMvc
 class OrderMockMvcTest @Autowired constructor(
     private val mvc: MockMvc,
@@ -82,10 +83,10 @@ class OrderMockMvcTest @Autowired constructor(
         mvc.perform(get("/api/v1/orders/$orderId").header("X-USER-ID", otherBuyer.id))
             .andExpect(status().isForbidden)
             .andExpect(jsonPath("$.meta.errorCode").value("ORDER_NOT_OWNED"))
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", otherBuyer.id))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", otherBuyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
             .andExpect(status().isForbidden)
 
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.status").value("CONFIRMED"))
             .andExpect(jsonPath("$.data.paymentAmount").value(7000))
@@ -102,15 +103,15 @@ class OrderMockMvcTest @Autowired constructor(
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.totalElements").value(1))
         entityManager.clear()
-        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isEqualTo(3000)
+        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isEqualTo(10000)
         assertThat(products.findById(first.id).orElseThrow().stock).isEqualTo(2)
         assertThat(products.findById(second.id).orElseThrow().stock).isEqualTo(1)
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
-            .andExpect(status().isConflict)
-            .andExpect(jsonPath("$.meta.errorCode").value("ORDER_ALREADY_CONFIRMED"))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.data.paymentMethod").value("PG"))
         entityManager.clear()
         assertThat(orders.findById(orderId).orElseThrow().paymentAmount).isEqualTo(7000)
-        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isEqualTo(3000)
+        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isEqualTo(10000)
         assertThat(products.findById(first.id).orElseThrow().stock).isEqualTo(2)
         assertThat(products.findById(second.id).orElseThrow().stock).isEqualTo(1)
     }
@@ -133,7 +134,7 @@ class OrderMockMvcTest @Autowired constructor(
             .andExpect(status().isCreated)
             .andReturn()
         val orderId = mapper.readTree(response.response.contentAsString).path("data").path("id").asLong()
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
             .andExpect(status().isConflict)
             .andExpect(jsonPath("$.meta.errorCode").value("INSUFFICIENT_STOCK"))
         entityManager.clear()
@@ -144,7 +145,7 @@ class OrderMockMvcTest @Autowired constructor(
     }
 
     @Test
-    fun `insufficient points preserve stock and draft order`() {
+    fun `zero point balance does not prevent PG payment`() {
         val buyer = initialization.create("구매자")
         val brand = brands.save(BrandJpaEntity("브랜드"))
         val product = products.save(ProductJpaEntity(brand.id, "상품", 1000, 1))
@@ -155,12 +156,12 @@ class OrderMockMvcTest @Autowired constructor(
             .andExpect(status().isCreated)
             .andReturn()
         val orderId = mapper.readTree(response.response.contentAsString).path("data").path("id").asLong()
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
-            .andExpect(status().isConflict)
-            .andExpect(jsonPath("$.meta.errorCode").value("INSUFFICIENT_POINTS"))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.data.paymentMethod").value("PG"))
         entityManager.clear()
-        assertThat(orders.findById(orderId).orElseThrow().status.name).isEqualTo("DRAFT")
-        assertThat(products.findById(product.id).orElseThrow().stock).isEqualTo(1)
+        assertThat(orders.findById(orderId).orElseThrow().status.name).isEqualTo("CONFIRMED")
+        assertThat(products.findById(product.id).orElseThrow().stock).isZero()
         assertThat(accounts.findById(buyer.id).orElseThrow().balance).isZero()
     }
 
@@ -175,7 +176,7 @@ class OrderMockMvcTest @Autowired constructor(
         ).andExpect(status().isCreated).andReturn()
         val orderId = mapper.readTree(response.response.contentAsString).path("data").path("id").asLong()
 
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.paymentAmount").value(0))
         entityManager.clear()
@@ -204,7 +205,7 @@ class OrderMockMvcTest @Autowired constructor(
         )
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.meta.errorCode").value("PRODUCT_NOT_FOUND"))
-        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
+        mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.meta.errorCode").value("PRODUCT_NOT_FOUND"))
 
@@ -256,15 +257,15 @@ class OrderMockMvcTest @Autowired constructor(
         statistics.isStatisticsEnabled = true
         try {
             statistics.clear()
-            mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id))
+            mvc.perform(post("/api/v1/orders/$orderId/confirm").header("X-USER-ID", buyer.id).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(orderId)))
                 .andExpect(status().isOk)
                 .andExpect(jsonPath("$.data.status").value("CONFIRMED"))
-            assertThat(statistics.flushCount).isLessThanOrEqualTo(4)
+            assertThat(statistics.flushCount).isLessThanOrEqualTo(12) // Two local transactions plus attempt/reservation batch flushes.
         } finally {
             statistics.isStatisticsEnabled = statisticsWereEnabled
         }
         entityManager.clear()
         assertThat(products.findAllById(productIds)).allMatch { it.stock == 0 }
-        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isEqualTo(8_000)
+        assertThat(accounts.findById(buyer.id).orElseThrow().balance).isEqualTo(20_000)
     }
 }

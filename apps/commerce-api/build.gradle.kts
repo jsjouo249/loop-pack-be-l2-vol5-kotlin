@@ -16,6 +16,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${project.properties["springDocOpenApiVersion"]}")
 
+    implementation("org.apache.httpcomponents.client5:httpclient5")
+    implementation("io.github.resilience4j:resilience4j-circuitbreaker:2.3.0")
+
     // querydsl
     kapt("com.querydsl:querydsl-apt::jakarta")
 

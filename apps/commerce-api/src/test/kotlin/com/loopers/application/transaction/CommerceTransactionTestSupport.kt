@@ -40,7 +40,7 @@ import javax.sql.DataSource
 @SpringBootTest(properties = ["spring.jpa.show-sql=false"])
 @AutoConfigureMockMvc
 @Timeout(60)
-@Import(WriteObservationConfiguration::class, SqlObservationConfiguration::class)
+@Import(WriteObservationConfiguration::class, SqlObservationConfiguration::class, com.loopers.PaymentTestConfiguration::class)
 abstract class CommerceTransactionTestSupport {
     @Autowired protected lateinit var brands: BrandApplicationService
 

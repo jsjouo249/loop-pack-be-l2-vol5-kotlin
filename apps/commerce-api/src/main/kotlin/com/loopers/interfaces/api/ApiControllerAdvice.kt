@@ -52,6 +52,9 @@ class ApiControllerAdvice {
             CommerceFailure.AUTHENTICATION_REQUIRED -> HttpStatus.UNAUTHORIZED
             CommerceFailure.USER_MISMATCH -> HttpStatus.FORBIDDEN
             CommerceFailure.ORDER_NOT_OWNED -> HttpStatus.FORBIDDEN
+            CommerceFailure.PAYMENT_ATTEMPT_CONFLICT,
+            CommerceFailure.PAYMENT_NOT_STARTED,
+            CommerceFailure.PAYMENT_OBSERVATION_CONFLICT,
             CommerceFailure.POINT_BALANCE_OVERFLOW,
             CommerceFailure.INSUFFICIENT_POINTS,
             CommerceFailure.ORDER_ALREADY_CONFIRMED,

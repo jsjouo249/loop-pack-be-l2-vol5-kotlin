@@ -1,5 +1,6 @@
 package com.loopers.application.transaction
 
+import com.loopers.confirmWithTestCard
 import com.loopers.domain.commerce.CommerceException
 import com.loopers.domain.commerce.CommerceFailure
 import org.assertj.core.api.Assertions.assertThat
@@ -21,7 +22,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
             Unit
         },
             "confirm" to {
-            orders.confirm(buyer, order)
+            orders.confirmWithTestCard(buyer, order)
             Unit
         },
                 ),
@@ -29,7 +30,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
             "SUCCESS" to 2,
         )
         assertThat(stock(product)).isIn(9L, 10L)
-        assertThat(balance(buyer)).isEqualTo(9000)
+        assertThat(balance(buyer)).isEqualTo(10_000)
         println("FINAL_DB adminStock=${stock(product)} balance=${balance(buyer)}")
     }
 
@@ -46,7 +47,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
             Unit
         },
             "confirm" to {
-            orders.confirm(buyer, order)
+            orders.confirmWithTestCard(buyer, order)
             Unit
         },
                 ),
@@ -56,7 +57,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
         assertThat(stock(product)).isEqualTo(4)
         assertThat(products.get(product).price).isEqualTo(2000)
         assertThat(orders.getForUser(buyer, order).items.single().unitPrice).isEqualTo(1000)
-        assertThat(balance(buyer)).isEqualTo(9000)
+        assertThat(balance(buyer)).isEqualTo(10_000)
     }
 
     @Test
@@ -68,7 +69,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
             listOf(
                 "delete" to { products.delete(product) },
                 "confirm" to {
-            orders.confirm(buyer, order)
+            orders.confirmWithTestCard(buyer, order)
             Unit
         },
             ),
@@ -78,7 +79,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
         assertThat(confirmed).isIn("SUCCESS", "PRODUCT_NOT_FOUND")
         assertThat(number("select count(*) from products where id=? and deleted_at is not null", product)).isEqualTo(1)
         assertThat(stock(product)).isEqualTo(if (confirmed == "SUCCESS") 4 else 5)
-        assertThat(balance(buyer)).isEqualTo(if (confirmed == "SUCCESS") 9000 else 10_000)
+        assertThat(balance(buyer)).isEqualTo(10_000)
     }
 
     @Test
@@ -137,14 +138,14 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
             if (adminFirst) {
                 products.adjustStock(product, 10)
                 products.update(product, "변경", 2000)
-                orders.confirm(buyer, order)
+                orders.confirmWithTestCard(buyer, order)
             } else {
-                orders.confirm(buyer, order)
+                orders.confirmWithTestCard(buyer, order)
                 products.adjustStock(product, 10)
                 products.update(product, "변경", 2000)
             }
             assertThat(stock(product)).isEqualTo(if (adminFirst) 9 else 10)
-            assertThat(balance(buyer)).isEqualTo(9000)
+            assertThat(balance(buyer)).isEqualTo(10_000)
             assertThat(orders.getForUser(buyer, order).items.single().unitPrice).isEqualTo(1000)
             products.delete(product)
             assertThat(assertThrows<CommerceException> { products.update(product, "복원", 1) }.reason).isEqualTo(CommerceFailure.PRODUCT_NOT_FOUND)
@@ -154,7 +155,7 @@ class AdministrativeConcurrencyTest : CommerceTransactionTestSupport() {
         val product = product(1000, 5)
         val order = draft(buyer, product)
         products.delete(product)
-        assertThat(assertThrows<CommerceException> { orders.confirm(buyer, order) }.reason).isEqualTo(CommerceFailure.PRODUCT_NOT_FOUND)
+        assertThat(assertThrows<CommerceException> { orders.confirmWithTestCard(buyer, order) }.reason).isEqualTo(CommerceFailure.PRODUCT_NOT_FOUND)
         assertThat(stock(product)).isEqualTo(5)
         assertThat(balance(buyer)).isEqualTo(10_000)
     }

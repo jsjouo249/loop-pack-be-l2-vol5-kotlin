@@ -22,6 +22,17 @@ class OrderRepositoryImpl(private val repository: OrderEntityRepository) : Order
         ),
     ).toDomain()
 
+    override fun savePaymentState(order: Order): Order = repository.savePaymentState(
+        OrderPaymentChange(
+            order.id,
+            order.status,
+            order.paymentMethod,
+            order.paymentAmount?.amount,
+            order.paymentResult,
+            order.confirmedAt,
+        ),
+    ).toDomain()
+
     override fun find(id: Long): Order? = repository.find(id)?.toDomain()
 
     override fun findPage(userId: Long?, offset: Int, limit: Int): List<Order> =
@@ -38,6 +49,7 @@ class OrderRepositoryImpl(private val repository: OrderEntityRepository) : Order
         paymentResult,
         confirmedAt,
         EntityState(id, createdAt, updatedAt),
+        paymentMethod,
     )
 
     private fun OrderEntity.toDomain() = Order.reconstitute(
@@ -48,5 +60,6 @@ class OrderRepositoryImpl(private val repository: OrderEntityRepository) : Order
         paymentAmount,
         paymentResult,
         confirmedAt,
+        paymentMethod,
     )
 }

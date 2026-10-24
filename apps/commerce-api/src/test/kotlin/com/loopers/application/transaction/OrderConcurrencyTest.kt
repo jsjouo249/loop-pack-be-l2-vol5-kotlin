@@ -1,5 +1,6 @@
 package com.loopers.application.transaction
 
+import com.loopers.confirmWithTestCard
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,7 +13,7 @@ class OrderConcurrencyTest : CommerceTransactionTestSupport() {
         val outcomes = race(
             inputs.map { (user, order) ->
                 "$order" to {
-            orders.confirm(user, order)
+            orders.confirmWithTestCard(user, order)
             Unit
         }
             },
@@ -25,12 +26,12 @@ class OrderConcurrencyTest : CommerceTransactionTestSupport() {
             assertThat(status).isEqualTo(if (outcome.outcome == "SUCCESS") "CONFIRMED" else "DRAFT")
         }
         assertThat(number("select sum(payment_amount) from orders where status = 'CONFIRMED'")).isEqualTo(5000)
-        assertThat(number("select sum(balance) from point_balances")).isEqualTo(75_000)
-        println("FINAL_DB stock=${stock(product)} confirmed=5 draft=3 totalBalance=75000")
+        assertThat(number("select sum(balance) from point_balances")).isEqualTo(80_000)
+        println("FINAL_DB stock=${stock(product)} confirmed=5 draft=3 totalBalance=80000")
     }
 
     @Test
-    fun `three four thousand orders spend eight thousand exactly`() {
+    fun `PG orders are independent of point balance`() {
         val buyer = buyer(10_000)
         val product = product(4000, 10)
         val drafts = (1..3).map { draft(buyer, product) }
@@ -39,18 +40,17 @@ class OrderConcurrencyTest : CommerceTransactionTestSupport() {
             race(
                 drafts.map {
                     "$it" to {
-            orders.confirm(buyer, it)
+            orders.confirmWithTestCard(buyer, it)
             Unit
         }
                 },
             ),
-            "SUCCESS" to 2,
-            "INSUFFICIENT_POINTS" to 1,
+            "SUCCESS" to 3,
         )
-        assertThat(balance(buyer)).isEqualTo(2000)
-        assertThat(stock(product)).isEqualTo(8)
-        assertThat(number("select sum(payment_amount) from orders where status = 'CONFIRMED'")).isEqualTo(8000)
-        println("FINAL_DB balance=${balance(buyer)} stock=${stock(product)} confirmed=2 draft=1")
+        assertThat(balance(buyer)).isEqualTo(10_000)
+        assertThat(stock(product)).isEqualTo(7)
+        assertThat(number("select sum(payment_amount) from orders where status = 'CONFIRMED'")).isEqualTo(12000)
+        println("FINAL_DB balance=${balance(buyer)} stock=${stock(product)} confirmed=3 draft=0")
     }
 
     @Test
@@ -67,14 +67,14 @@ class OrderConcurrencyTest : CommerceTransactionTestSupport() {
             Unit
         },
             "$order" to {
-            orders.confirm(buyer, order)
+            orders.confirmWithTestCard(buyer, order)
             Unit
         },
                 ),
             ),
             "SUCCESS" to 2,
         )
-        assertThat(balance(buyer)).isEqualTo(5000)
+        assertThat(balance(buyer)).isEqualTo(12_000)
         assertThat(stock(product)).isZero()
         println("FINAL_DB balance=${balance(buyer)} stock=${stock(product)}")
     }
@@ -89,15 +89,14 @@ class OrderConcurrencyTest : CommerceTransactionTestSupport() {
             race(
                 (1..4).map {
                     "$order-request-$it" to {
-            orders.confirm(buyer, order)
+            orders.confirmWithTestCard(buyer, order)
             Unit
         }
                 },
             ),
-            "SUCCESS" to 1,
-            "ORDER_ALREADY_CONFIRMED" to 3,
+            "SUCCESS" to 4,
         )
-        assertThat(balance(buyer)).isEqualTo(8000)
+        assertThat(balance(buyer)).isEqualTo(10_000)
         assertThat(stock(product)).isEqualTo(4)
         assertThat(number("select count(*) from orders where status = 'CONFIRMED'")).isEqualTo(1)
     }

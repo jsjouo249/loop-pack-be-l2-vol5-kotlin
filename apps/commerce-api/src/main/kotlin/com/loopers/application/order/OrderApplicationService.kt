@@ -11,11 +11,14 @@ import com.loopers.domain.order.OrderLine
 import com.loopers.domain.order.OrderRepository
 import com.loopers.domain.order.OrderStatus
 import com.loopers.domain.order.PaymentResult
-import com.loopers.domain.point.PointAccountRepository
+import com.loopers.application.payment.PaymentApplicationService
+import com.loopers.application.payment.PaymentInput
+import com.loopers.domain.payment.PaymentAttempt
+import com.loopers.domain.payment.PaymentAttemptRepository
+import com.loopers.domain.payment.AttemptStatus
+import com.loopers.domain.order.PaymentMethod
 import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.user.UserRepository
-import com.loopers.application.product.ProductListInvalidation
-import com.loopers.application.transaction.RetryingWriteExecutor
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
@@ -33,6 +36,18 @@ data class OrderResult(
     val paymentResult: PaymentResult?,
     val createdAt: ZonedDateTime,
     val confirmedAt: ZonedDateTime?,
+    val paymentMethod: PaymentMethod?,
+    val paymentAttempt: PaymentAttemptResult?,
+)
+
+data class PaymentAttemptResult(
+    val paymentAttemptKey: String,
+    val status: AttemptStatus,
+    val amount: Long,
+    val providerOrderId: String,
+    val transactionKey: String?,
+    val lastCheck: String?,
+    val quarantined: Boolean,
 )
 
 data class OrderItemInput(val productId: Long, val quantity: Int)
@@ -42,9 +57,8 @@ class OrderApplicationService(
     private val orders: OrderRepository,
     private val products: ProductRepository,
     private val users: UserRepository,
-    private val points: PointAccountRepository,
-    private val writes: RetryingWriteExecutor,
-    private val invalidation: ProductListInvalidation,
+    private val payments: PaymentApplicationService,
+    private val attempts: PaymentAttemptRepository,
 ) {
     fun create(userId: Long, inputs: List<OrderItemInput>): OrderResult {
         requireUser(userId)
@@ -66,29 +80,14 @@ class OrderApplicationService(
         return result(orders.create(Order(userId, lines)))
     }
 
-    /** 주문·포인트·상품을 잠근 뒤 전체 조건을 검증하고, 재고·잔액·확정 결과를 함께 저장한다. */
-    fun confirm(userId: Long, orderId: Long): OrderResult = writes.execute("order.confirm") {
-        requireUser(userId)
-        positiveId(orderId)
-        // 잠금 순서는 주문 → 포인트 계정 → 상품 ID 오름차순이다. Order.items가 상품 ID 순서를 보장한다.
-        val order = orders.findForUpdate(orderId) ?: throw CommerceException(CommerceFailure.ORDER_NOT_FOUND)
-        if (order.userId != userId) throw CommerceException(CommerceFailure.ORDER_NOT_OWNED)
-        order.assertDraft()
-        // 0원 주문도 기존 계정이 필요하며, 누락 계정을 잔액 0으로 간주하거나 자동 생성하지 않는다.
-        val pointAccount = checkNotNull(points.findByUserIdForUpdate(userId)) { "Missing point account: $userId" }
-        val orderProducts = order.items.map { item ->
-            products.findActiveForUpdate(item.productId) ?: throw CommerceException(CommerceFailure.PRODUCT_NOT_FOUND)
-        }
-        // 주문 생성 이후 삭제·재고 변경을 다시 검증한다. 가격은 주문 생성 시의 스냅샷을 사용한다.
-        order.items.zip(orderProducts).forEach { (item, product) -> product.assertCanDecrease(item.quantity) }
-        pointAccount.assertCanPay(order.totalAmount.amount)
-        // 모든 조건을 확인한 후 변경하며, 뒤 저장이 실패하면 앞서 실행한 SQL까지 함께 롤백한다.
-        order.items.zip(orderProducts).forEach { (item, product) -> product.decreaseStock(item.quantity) }
-        products.saveStockChanges(orderProducts)
-        pointAccount.pay(order.totalAmount.amount)
-        points.saveBalance(pointAccount)
-        order.confirm()
-        result(orders.saveConfirmation(order)).also { invalidation.afterCommit() }
+    fun confirm(userId: Long, orderId: Long, input: PaymentInput? = null): OrderResult {
+        val snapshot = payments.confirm(userId, orderId, input)
+        return result(snapshot.order, snapshot.attempt)
+    }
+
+    fun reconcile(userId: Long, orderId: Long): OrderResult {
+        val snapshot = payments.reconcile(userId, orderId)
+        return result(snapshot.order, snapshot.attempt)
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
@@ -104,7 +103,7 @@ class OrderApplicationService(
     fun listForUser(userId: Long, page: Int, size: Int): PageResult<OrderResult> {
         requireUser(userId)
         val offset = offset(page, size)
-        return pageResult(page, size, orders.count(userId), orders.findPage(userId, offset, size).map(::result))
+        return pageResult(page, size, orders.count(userId), results(orders.findPage(userId, offset, size)))
     }
 
     @Transactional(readOnly = true, isolation = Isolation.REPEATABLE_READ)
@@ -117,7 +116,7 @@ class OrderApplicationService(
     fun listForAdmin(userId: Long?, page: Int, size: Int): PageResult<OrderResult> {
         if (userId != null) positiveId(userId)
         val offset = offset(page, size)
-        return pageResult(page, size, orders.count(userId), orders.findPage(userId, offset, size).map(::result))
+        return pageResult(page, size, orders.count(userId), results(orders.findPage(userId, offset, size)))
     }
 
     private fun requireUser(id: Long) {
@@ -125,7 +124,12 @@ class OrderApplicationService(
         users.find(id) ?: throw CommerceException(CommerceFailure.USER_NOT_FOUND)
     }
 
-    private fun result(order: Order) = OrderResult(
+    private fun results(found: List<Order>): List<OrderResult> {
+        val byOrder = attempts.findAll(found.map { it.id }).associateBy { it.orderId }
+        return found.map { result(it, byOrder[it.id]) }
+    }
+
+    private fun result(order: Order, attempt: PaymentAttempt? = attempts.find(order.id)) = OrderResult(
         order.id,
         order.userId,
         order.status,
@@ -135,5 +139,17 @@ class OrderApplicationService(
         order.paymentResult,
         order.createdAt,
         order.confirmedAt,
+        order.paymentMethod,
+        attempt?.let {
+            PaymentAttemptResult(
+                it.key,
+                it.status,
+                it.amount,
+                it.providerOrderId,
+                it.transactionKey,
+                it.lastCheck,
+                it.quarantined,
+            )
+        },
     )
 }

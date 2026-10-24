@@ -62,35 +62,31 @@ class AggregateCoordinationTest {
     }
 
     @Test
-    fun `confirmation locks order then account then sorted products and preserves snapshots`() {
+    fun `order facade delegates PG confirmation and returns its snapshot without point access`() {
         val order = setupOrder(5)
-        whenever(orders.saveConfirmation(any())).thenAnswer { it.getArgument(0) }
-        val result = OrderApplicationService(orders, products, users, points, executor, mock()).confirm(1, 4)
-        inOrder(orders, points, products) {
-            verify(orders).findForUpdate(4)
-            verify(points).findByUserIdForUpdate(1)
-            verify(products).findActiveForUpdate(2)
-            verify(products).findActiveForUpdate(3)
-            verify(products).saveStockChanges(any())
-            verify(points).saveBalance(any())
-            verify(orders).saveConfirmation(order)
-        }
+        order.startPayment()
+        order.finishPayment(true)
+        val payments: com.loopers.application.payment.PaymentApplicationService = mock()
+        val attempts: com.loopers.domain.payment.PaymentAttemptRepository = mock()
+        val input = com.loopers.testPaymentInput(4)
+        whenever(payments.confirm(1, 4, input)).thenReturn(com.loopers.application.payment.PaymentSnapshot(order, null))
+        val result = OrderApplicationService(orders, products, users, payments, attempts).confirm(1, 4, input)
         assertThat(result.status).isEqualTo(OrderStatus.CONFIRMED)
         assertThat(result.paymentAmount).isEqualTo(3000)
         assertThat(result.items.map { it.unitPrice }).containsExactly(1000, 2000)
+        org.mockito.kotlin.verifyNoInteractions(points)
     }
 
     @Test
-    fun `all preconditions are checked before any aggregate mutation or storage`() {
-        setupOrder(0)
-        assertThrows<InsufficientStockException> {
-            OrderApplicationService(orders, products, users, points, executor, mock()).confirm(1, 4)
-        }
+    fun `order facade propagates PG precondition failure without changing snapshots`() {
+        val order = setupOrder(0)
+        val payments: com.loopers.application.payment.PaymentApplicationService = mock()
+        val input = com.loopers.testPaymentInput(4)
+        whenever(payments.confirm(1, 4, input)).thenThrow(InsufficientStockException())
+        assertThrows<InsufficientStockException> { OrderApplicationService(orders, products, users, payments, mock()).confirm(1, 4, input) }
         verify(products, never()).saveStockChanges(any())
         verify(points, never()).saveBalance(any())
-        verify(orders, never()).saveConfirmation(any())
-        assertThat(products.findActiveForUpdate(2)!!.stock.remaining).isEqualTo(5)
-        assertThat(points.findByUserIdForUpdate(1)!!.balance.amount).isEqualTo(10_000)
+        assertThat(order.status).isEqualTo(OrderStatus.DRAFT)
     }
 
     private fun setupOrder(secondStock: Int): Order {

@@ -28,13 +28,29 @@ class JpaOrderEntityRepository(
         writes.flush()
         check(
             writes.update(
-            "update orders set status = :status, payment_amount = :amount, payment_result = :result, " +
+            "update orders set payment_method = 'POINT', status = :status, payment_amount = :amount, " +
+                "payment_result = :result, " +
                 "confirmed_at = :confirmedAt, updated_at = current_timestamp(6) where id = :id and status = 'DRAFT'",
             "id" to change.id, "status" to change.status.name, "amount" to change.paymentAmount,
             "result" to change.paymentResult.name, "confirmedAt" to change.confirmedAt,
         ) == 1,
         )
         return writes.current(OrderJpaEntity::class.java, change.id).toEntity()
+    }
+
+    override fun savePaymentState(change: OrderPaymentChange): OrderEntity {
+        val target = checkNotNull(jpa.findByIdOrNull(change.id))
+        check(
+            target.status == com.loopers.domain.order.OrderStatus.DRAFT ||
+                target.status == com.loopers.domain.order.OrderStatus.PAYMENT_PENDING,
+        )
+        target.status = change.status
+        target.paymentMethod = change.paymentMethod
+        target.paymentAmount = change.paymentAmount
+        target.paymentResult = change.paymentResult
+        target.confirmedAt = change.confirmedAt
+        jpa.flush()
+        return target.toEntity()
     }
 
     @Transactional(readOnly = true)

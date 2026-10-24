@@ -1,6 +1,9 @@
 package com.loopers.domain.commerce
 
 enum class CommerceFailure(val message: String) {
+    PAYMENT_ATTEMPT_CONFLICT("결제 시도 요청이 기존 요청과 다릅니다."),
+    PAYMENT_NOT_STARTED("PG 결제 시도가 없습니다."),
+    PAYMENT_OBSERVATION_CONFLICT("외부 결제 결과가 기존 사실과 일치하지 않습니다."),
     INVALID_NAME("이름은 1~255자여야 합니다."),
     INVALID_PRICE("가격은 0 이상이어야 합니다."),
     INVALID_STOCK("재고는 0 이상이어야 합니다."),

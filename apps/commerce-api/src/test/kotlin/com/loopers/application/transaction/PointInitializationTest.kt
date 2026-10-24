@@ -1,5 +1,6 @@
 package com.loopers.application.transaction
 
+import com.loopers.confirmWithTestCard
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,7 +18,7 @@ class PointInitializationTest : CommerceTransactionTestSupport() {
         val buyer = buyer(0)
         assertThat(balance(buyer)).isZero()
         val product = product(0, 1)
-        orders.confirm(buyer, draft(buyer, product))
+        orders.confirmWithTestCard(buyer, draft(buyer, product))
         assertThat(balance(buyer)).isZero()
         assertThat(number("select count(*) from point_balances")).isEqualTo(1)
         assertThat(stock(product)).isZero()
@@ -41,7 +42,7 @@ class PointInitializationTest : CommerceTransactionTestSupport() {
     }
 
     @Test
-    fun `missing account is a server integrity error for read charge and confirmation`() {
+    fun `missing point account fails point operations but does not prevent PG payment`() {
         val buyer = buyer(0)
         val product = product(0, 1)
         val order = draft(buyer, product)
@@ -50,11 +51,11 @@ class PointInitializationTest : CommerceTransactionTestSupport() {
             .andExpect(status().isInternalServerError).andExpect(jsonPath("$.meta.errorCode").value("Internal Server Error"))
         mvc.perform(post("/api/v1/points/charge").header("X-USER-ID", buyer).contentType(MediaType.APPLICATION_JSON).content("""{"amount":1000}"""))
             .andExpect(status().isInternalServerError)
-        mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", buyer))
-            .andExpect(status().isInternalServerError)
+        mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", buyer).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(order)))
+            .andExpect(status().isOk)
         assertThat(number("select count(*) from point_balances")).isZero()
-        assertThat(stock(product)).isEqualTo(1)
-        assertThat(jdbc.queryForObject("select status from orders where id=?", String::class.java, order)).isEqualTo("DRAFT")
+        assertThat(stock(product)).isZero()
+        assertThat(jdbc.queryForObject("select status from orders where id=?", String::class.java, order)).isEqualTo("CONFIRMED")
     }
 
     @Test

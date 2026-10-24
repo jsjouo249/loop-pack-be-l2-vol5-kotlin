@@ -1,6 +1,6 @@
 package com.loopers.application.transaction
 
-import com.loopers.infrastructure.point.PointAccountEntity
+import com.loopers.confirmWithTestCard
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -59,9 +59,9 @@ class MySqlTransactionPolicyTest : CommerceTransactionTestSupport() {
                     assertThat(stock(product)).isEqualTo(4)
                     jdbc.update("update brands set name='blocked' where id=?", marker)
                     invocation.callRealMethod()
-                }.whenever(pointStorage).saveBalance(any<PointAccountEntity>())
+                }.whenever(orderStorage).savePaymentState(any())
                 observer.events.clear()
-                mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", buyer))
+                mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", buyer).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(order)))
                     .andExpect(status().isServiceUnavailable)
                     .andExpect(jsonPath("$.meta.errorCode").value("TRANSACTION_BUSY"))
                     .andExpect(jsonPath("$.meta.message").value("다른 요청을 처리 중입니다. 잠시 후 상태를 확인해 주세요."))
@@ -121,7 +121,7 @@ class MySqlTransactionPolicyTest : CommerceTransactionTestSupport() {
     }
 
     @Test
-    fun `real deadlock retries entire order with snapshots and one final debit`() {
+    fun `real deadlock retries entire order with snapshots and one PG dispatch`() {
         val buyer = buyer(10_000)
         val product = product(1000, 5)
         val order = draft(buyer, product)
@@ -132,15 +132,15 @@ class MySqlTransactionPolicyTest : CommerceTransactionTestSupport() {
                     val result = invocation.callRealMethod()
                     if (calls.incrementAndGet() == 1) collide()
                     result
-                }.whenever(orderStorage).saveConfirmation(any())
+                }.whenever(orderStorage).savePaymentState(any())
             },
-            antagonist = { jdbc.update("update point_balances set balance=balance+500 where user_id=?", buyer) },
-            action = { orders.confirm(buyer, order) },
+            antagonist = { jdbc.update("update products set stock=stock+1 where id=?", product) },
+            action = { orders.confirmWithTestCard(buyer, order) },
         )
-        assertThat(balance(buyer)).isEqualTo(9500)
-        assertThat(stock(product)).isEqualTo(4)
+        assertThat(balance(buyer)).isEqualTo(10_000)
+        assertThat(stock(product)).isEqualTo(5)
         assertThat(orders.getForUser(buyer, order).paymentAmount).isEqualTo(1000)
-        assertRetry("order.confirm")
+        assertRetry("payment.prepare")
     }
 
     @Test
@@ -228,17 +228,17 @@ class MySqlTransactionPolicyTest : CommerceTransactionTestSupport() {
             val result = invocation.callRealMethod()
             if (calls.incrementAndGet() == 1) throw java.sql.SQLException("injected driver deadlock", "40001", 1213)
             result
-        }.whenever(orderStorage).saveConfirmation(any())
+        }.whenever(orderStorage).savePaymentState(any())
         doAnswer {
             assertThat(org.springframework.transaction.support.TransactionSynchronizationManager.isActualTransactionActive()).isFalse()
-            jdbc.update("update point_balances set balance=0 where user_id=?", buyer)
+            jdbc.update("update products set stock=0 where id=?", product)
             Unit
         }.whenever(retryTime).sleep(50)
         observer.events.clear()
-        mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", buyer))
-            .andExpect(status().isConflict).andExpect(jsonPath("$.meta.errorCode").value("INSUFFICIENT_POINTS"))
-        assertThat(stock(product)).isEqualTo(5)
-        assertThat(balance(buyer)).isZero()
+        mvc.perform(post("/api/v1/orders/$order/confirm").header("X-USER-ID", buyer).contentType(org.springframework.http.MediaType.APPLICATION_JSON).content(com.loopers.testPaymentJson(order)))
+            .andExpect(status().isConflict).andExpect(jsonPath("$.meta.errorCode").value("INSUFFICIENT_STOCK"))
+        assertThat(stock(product)).isZero()
+        assertThat(balance(buyer)).isEqualTo(10_000)
         assertThat(orders.getForUser(buyer, order).status.name).isEqualTo("DRAFT")
         assertThat(observer.events.filter { it.kind == "attempt" }.map { it.outcome }).containsExactly("DEADLOCK", "BUSINESS_REJECTION")
     }

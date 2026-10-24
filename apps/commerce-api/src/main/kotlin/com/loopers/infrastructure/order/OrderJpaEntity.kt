@@ -3,6 +3,7 @@ package com.loopers.infrastructure.order
 import com.loopers.domain.commerce.EntityState
 import com.loopers.domain.order.OrderStatus
 import com.loopers.domain.order.PaymentResult
+import com.loopers.domain.order.PaymentMethod
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -20,10 +21,12 @@ import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.Check
 import java.time.ZonedDateTime
 
 @Entity
+@DynamicUpdate
 @Table(name = "orders", indexes = [Index(columnList = "user_id,created_at,id"), Index(columnList = "created_at,id")])
 @Check(constraints = "total_amount >= 0 and (payment_amount is null or payment_amount >= 0)")
 class OrderJpaEntity(
@@ -42,6 +45,10 @@ class OrderJpaEntity(
 
     @OneToMany(mappedBy = "order", cascade = [CascadeType.PERSIST], fetch = FetchType.LAZY)
     val items: MutableList<OrderItemJpaEntity> = mutableListOf()
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", length = 20)
+    var paymentMethod: PaymentMethod? = null
 
     @Column(name = "payment_amount")
     var paymentAmount: Long? = null
@@ -74,6 +81,7 @@ class OrderJpaEntity(
         paymentResult,
         confirmedAt,
         EntityState(id, createdAt, updatedAt),
+        paymentMethod,
     )
 
     @PrePersist

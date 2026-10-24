@@ -6,9 +6,11 @@ import com.loopers.domain.commerce.EntityState
 import com.loopers.domain.product.Money
 import java.time.ZonedDateTime
 
-enum class OrderStatus { DRAFT, CONFIRMED }
+enum class OrderStatus { DRAFT, PAYMENT_PENDING, CONFIRMED, PAYMENT_FAILED }
 
-enum class PaymentResult { SUCCESS }
+enum class PaymentResult { SUCCESS, FAILED }
+
+enum class PaymentMethod { POINT, PG }
 
 data class OrderLine(val productId: Long, val quantity: Int, val unitPrice: Long, val id: Long = 0)
 
@@ -20,9 +22,10 @@ class Order private constructor(
     initialPaymentAmount: Long?,
     initialPaymentResult: PaymentResult?,
     initialConfirmedAt: ZonedDateTime?,
+    initialPaymentMethod: PaymentMethod?,
 ) {
     constructor(userId: Long, lines: List<OrderLine>) :
-        this(userId, lines, EntityState(), OrderStatus.DRAFT, null, null, null)
+        this(userId, lines, EntityState(), OrderStatus.DRAFT, null, null, null, null)
 
     val id: Long = state.id
     val createdAt: ZonedDateTime = state.createdAt
@@ -44,6 +47,9 @@ class Order private constructor(
     var paymentResult: PaymentResult? = initialPaymentResult
         private set
 
+    var paymentMethod: PaymentMethod? = initialPaymentMethod
+        private set
+
     var confirmedAt: ZonedDateTime? = initialConfirmedAt
         private set
 
@@ -58,10 +64,25 @@ class Order private constructor(
 
     fun confirm() {
         assertDraft()
+        paymentMethod = PaymentMethod.POINT
         paymentAmount = totalAmount
         paymentResult = PaymentResult.SUCCESS
         confirmedAt = ZonedDateTime.now()
         status = OrderStatus.CONFIRMED
+    }
+
+    fun startPayment() {
+        assertDraft()
+        paymentMethod = PaymentMethod.PG
+        status = OrderStatus.PAYMENT_PENDING
+    }
+
+    fun finishPayment(success: Boolean) {
+        check(status == OrderStatus.PAYMENT_PENDING && paymentMethod == PaymentMethod.PG)
+        paymentAmount = totalAmount
+        paymentResult = if (success) PaymentResult.SUCCESS else PaymentResult.FAILED
+        status = if (success) OrderStatus.CONFIRMED else OrderStatus.PAYMENT_FAILED
+        if (success) confirmedAt = ZonedDateTime.now()
     }
 
     companion object {
@@ -73,6 +94,7 @@ class Order private constructor(
             paymentAmount: Long?,
             paymentResult: PaymentResult?,
             confirmedAt: ZonedDateTime?,
-        ): Order = Order(userId, lines, state, status, paymentAmount, paymentResult, confirmedAt)
+            paymentMethod: PaymentMethod? = if (status == OrderStatus.CONFIRMED) PaymentMethod.POINT else null,
+        ): Order = Order(userId, lines, state, status, paymentAmount, paymentResult, confirmedAt, paymentMethod)
     }
 }
