@@ -14,7 +14,7 @@ spring:
   main:
     web-application-type: servlet
   application:
-    name: commerce-api
+    name: commerce-streamer
   profiles:
     active: local
   config:
@@ -34,6 +34,15 @@ spring:
   config:
     activate:
       on-profile: local, test
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  jpa:
+    hibernate:
+      ddl-auto: validate
 
 ---
 spring:

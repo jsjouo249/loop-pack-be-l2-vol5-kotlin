@@ -5,6 +5,7 @@ import com.loopers.domain.commerce.CommerceFailure
 import com.loopers.domain.commerce.EntityState
 import com.loopers.domain.product.Money
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 enum class OrderStatus { DRAFT, PAYMENT_PENDING, CONFIRMED, PAYMENT_FAILED }
 
@@ -82,7 +83,9 @@ class Order private constructor(
         paymentAmount = totalAmount
         paymentResult = if (success) PaymentResult.SUCCESS else PaymentResult.FAILED
         status = if (success) OrderStatus.CONFIRMED else OrderStatus.PAYMENT_FAILED
-        if (success) confirmedAt = ZonedDateTime.now()
+
+        // Match MySQL precision so reloading this fact preserves the event timestamp.
+        if (success) confirmedAt = ZonedDateTime.now().truncatedTo(ChronoUnit.MICROS)
     }
 
     companion object {

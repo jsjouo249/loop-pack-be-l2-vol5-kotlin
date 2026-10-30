@@ -1,0 +1,11 @@
+WEEK6_PRODUCER topic=publisher-61777f65-ae05-439f-990f-8ea65f6ec228 partition=1 offset=0 key=1 eventId=f71ead3e-c60c-395f-b157-f90ff291e9fc
+WEEK6_ASSIGNMENT members=1 partitions=2 assignments=[[assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-0, assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-1]]
+WEEK6_ASSIGNMENT members=2 partitions=2 assignments=[[assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-0], [assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-1]]
+WEEK6_ASSIGNMENT members=3 partitions=2 assignments=[[assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-0], [assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-1], []]
+WEEK6_ASSIGNMENT members=1 partitions=2 assignments=[[assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-0, assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-1]]
+WEEK6_ASSIGNMENT members=3 partitions=2 assignments=[[assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-0], [assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-1], []]
+WEEK6_INDEPENDENT_GROUP allPartitions=[assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-0, assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4-1]
+WEEK6_OFFSET_REDELIVERY first topic=assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4 partition=0 offset=0 position=1 committed=null
+WEEK6_OFFSET_REDELIVERY second topic=assignment-9f8b696f-6a85-49ab-82d5-d89e0b7c2cf4 partition=0 offset=0 committed=1
+WEEK6_LISTENER_FAILURE failedOffset=0 committed=null stopped=true
+WEEK6_LISTENER_RECOVERED offset=0 committed=1
