@@ -1,0 +1,486 @@
+{
+  "date": "2026-10-30",
+  "modules": [
+    {
+      "module": "modules/events",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "com.loopers.domain.order.event.OrderConfirmedTest",
+          "timestamp": "2026-10-30T04:18:38.258Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    {
+      "module": "modules/kafka",
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": []
+    },
+    {
+      "module": "apps/commerce-api",
+      "tests": 190,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "com.loopers.CommerceApiContextTest",
+          "timestamp": "2026-10-30T04:25:24.700Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.cache.ProductListCacheContractTest",
+          "timestamp": "2026-10-30T04:25:26.405Z",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.cache.ProductListCacheHitTest",
+          "timestamp": "2026-10-30T04:25:32.556Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.cache.ProductListCacheOutageTest",
+          "timestamp": "2026-10-30T04:25:34.568Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.cache.ProductListCacheRaceTest",
+          "timestamp": "2026-10-30T04:25:40.603Z",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.cache.RedisProductListCacheFailureTest",
+          "timestamp": "2026-10-30T04:25:44.553Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "예시를 조회할 때,",
+          "timestamp": "2026-10-30T04:25:44.600Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.example.ExampleFacadeIntegrationTest",
+          "timestamp": "1970-01-01T00:00:00Z",
+          "tests": 0,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.order.OrderConfirmedAfterCommitTest",
+          "timestamp": "2026-10-30T04:25:45.275Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.AdministrativeConcurrencyTest",
+          "timestamp": "2026-10-30T04:25:45.343Z",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.AggregateCoordinationTest",
+          "timestamp": "2026-10-30T04:25:47.862Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.BrandDeletionHttpTest",
+          "timestamp": "2026-10-30T04:25:47.940Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.BrandRemovalTransactionTest",
+          "timestamp": "2026-10-30T04:25:48.710Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.LostUpdateControlTest",
+          "timestamp": "2026-10-30T04:25:49.225Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.MySqlTransactionPolicyTest",
+          "timestamp": "2026-10-30T04:25:49.454Z",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.OrderConcurrencyTest",
+          "timestamp": "2026-10-30T04:25:59.460Z",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.PartialStorageTest",
+          "timestamp": "2026-10-30T04:26:01.060Z",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.PointInitializationTest",
+          "timestamp": "2026-10-30T04:26:02.506Z",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+          "timestamp": "2026-10-30T04:26:06.179Z",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.ReviewFixRegressionTest",
+          "timestamp": "2026-10-30T04:26:07.910Z",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.ReviewQueryPlanTest",
+          "timestamp": "2026-10-30T04:26:10.597Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.SqlContractTest",
+          "timestamp": "2026-10-30T04:26:11.550Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.application.transaction.WriteRollbackTest",
+          "timestamp": "2026-10-30T04:26:12.415Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.architecture.ArchitectureTest",
+          "timestamp": "2026-10-30T04:26:13.107Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.brand.BrandTest",
+          "timestamp": "2026-10-30T04:26:15.556Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "예시 모델을 생성할 때,",
+          "timestamp": "2026-10-30T04:26:15.560Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.order.OrderTest",
+          "timestamp": "2026-10-30T04:26:15.563Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.order.PgOrderTest",
+          "timestamp": "2026-10-30T04:26:15.567Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.payment.PaymentAttemptTest",
+          "timestamp": "2026-10-30T04:26:15.568Z",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.point.PointAccountTest",
+          "timestamp": "2026-10-30T04:26:15.571Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.product.ProductTest",
+          "timestamp": "2026-10-30T04:26:15.573Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.product.StockTest",
+          "timestamp": "2026-10-30T04:26:15.575Z",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.infrastructure.CommerceSchemaTest",
+          "timestamp": "2026-10-30T04:26:15.603Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.ContractClassificationTest",
+          "timestamp": "2026-10-30T04:26:18.420Z",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "GET /api/v1/examples/{id}",
+          "timestamp": "2026-10-30T04:26:19.789Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.ExampleV1ApiE2ETest",
+          "timestamp": "1970-01-01T00:00:00Z",
+          "tests": 0,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.admin.AdminCommerceMockMvcTest",
+          "timestamp": "2026-10-30T04:26:21.700Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.like.ProductLikeMockMvcTest",
+          "timestamp": "2026-10-30T04:26:22.679Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.order.OrderMockMvcTest",
+          "timestamp": "2026-10-30T04:26:25.288Z",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.point.PointMockMvcTest",
+          "timestamp": "2026-10-30T04:26:27.305Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.api.product.CustomerBrowseMockMvcTest",
+          "timestamp": "2026-10-30T04:26:27.838Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.payment.KafkaOrderConfirmedPublisherTest",
+          "timestamp": "2026-10-30T04:26:28.624Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.payment.OrderConfirmedPublicationTest",
+          "timestamp": "2026-10-30T04:25:19.337Z",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.payment.PaymentIntegrationTest",
+          "timestamp": "2026-10-30T04:26:32.565Z",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.payment.PaymentProviderContractTest",
+          "timestamp": "2026-10-30T04:26:39.326Z",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.payment.PointPaymentMigrationTest",
+          "timestamp": "2026-10-30T04:26:40.399Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.support.error.CoreExceptionTest",
+          "timestamp": "2026-10-30T04:26:40.766Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    {
+      "module": "apps/commerce-streamer",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": [
+        {
+          "name": "com.loopers.architecture.ArchitectureTest",
+          "timestamp": "2026-10-30T04:35:21.235Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.domain.purchase.PurchaseReceiptTest",
+          "timestamp": "2026-10-30T04:35:22.913Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.interfaces.consumer.PurchaseActivityConsumerTest",
+          "timestamp": "2026-10-30T04:35:23.936Z",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.kafka.KafkaAssignmentExperimentTest",
+          "timestamp": "2026-10-30T04:35:26.207Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.kafka.PurchaseListenerFailureExperimentTest",
+          "timestamp": "2026-10-30T04:35:39.779Z",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.purchase.PurchaseActivityIntegrationTest",
+          "timestamp": "2026-10-30T04:36:10.192Z",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "name": "com.loopers.purchase.PurchaseConfigurationTest",
+          "timestamp": "2026-10-30T04:36:22.682Z",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    }
+  ],
+  "total": {
+    "tests": 210,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

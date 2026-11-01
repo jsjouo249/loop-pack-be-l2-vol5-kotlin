@@ -1,0 +1,417 @@
+{
+  "modules/events": {
+    "totals": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "name": "com.loopers.domain.order.event.OrderConfirmedTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "apps/commerce-api": {
+    "totals": {
+      "tests": 190,
+      "failures": 130,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "name": "com.loopers.CommerceApiContextTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.cache.ProductListCacheContractTest",
+        "tests": 11,
+        "failures": 11,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.cache.ProductListCacheHitTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.cache.ProductListCacheOutageTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.cache.ProductListCacheRaceTest",
+        "tests": 5,
+        "failures": 5,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.cache.RedisProductListCacheFailureTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "예시를 조회할 때,",
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.example.ExampleFacadeIntegrationTest",
+        "tests": 0,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.order.OrderConfirmedAfterCommitTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.AdministrativeConcurrencyTest",
+        "tests": 8,
+        "failures": 8,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.AggregateCoordinationTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.BrandDeletionHttpTest",
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.BrandRemovalTransactionTest",
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.LostUpdateControlTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.MySqlTransactionPolicyTest",
+        "tests": 9,
+        "failures": 9,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.OrderConcurrencyTest",
+        "tests": 5,
+        "failures": 5,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.PartialStorageTest",
+        "tests": 5,
+        "failures": 5,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.PointInitializationTest",
+        "tests": 5,
+        "failures": 5,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.ReviewFixRegressionTest",
+        "tests": 9,
+        "failures": 9,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.ReviewQueryPlanTest",
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.SqlContractTest",
+        "tests": 3,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.application.transaction.WriteRollbackTest",
+        "tests": 3,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.architecture.ArchitectureTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.brand.BrandTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "예시 모델을 생성할 때,",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.order.OrderTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.order.PgOrderTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.payment.PaymentAttemptTest",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.point.PointAccountTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.product.ProductTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.product.StockTest",
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.infrastructure.CommerceSchemaTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.ContractClassificationTest",
+        "tests": 4,
+        "failures": 4,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "GET /api/v1/examples/{id}",
+        "tests": 3,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.ExampleV1ApiE2ETest",
+        "tests": 0,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.admin.AdminCommerceMockMvcTest",
+        "tests": 3,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.like.ProductLikeMockMvcTest",
+        "tests": 3,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.order.OrderMockMvcTest",
+        "tests": 7,
+        "failures": 7,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.point.PointMockMvcTest",
+        "tests": 2,
+        "failures": 2,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.api.product.CustomerBrowseMockMvcTest",
+        "tests": 3,
+        "failures": 3,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.payment.KafkaOrderConfirmedPublisherTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.payment.OrderConfirmedPublicationTest",
+        "tests": 7,
+        "failures": 7,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.payment.PaymentIntegrationTest",
+        "tests": 21,
+        "failures": 21,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.payment.PaymentProviderContractTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.payment.PointPaymentMigrationTest",
+        "tests": 1,
+        "failures": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.support.error.CoreExceptionTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "apps/commerce-streamer": {
+    "totals": {
+      "tests": 17,
+      "failures": 7,
+      "errors": 0,
+      "skipped": 0
+    },
+    "suites": [
+      {
+        "name": "com.loopers.architecture.ArchitectureTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.domain.purchase.PurchaseReceiptTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.interfaces.consumer.PurchaseActivityConsumerTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.kafka.KafkaAssignmentExperimentTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.kafka.PurchaseListenerFailureExperimentTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.purchase.PurchaseActivityIntegrationTest",
+        "tests": 7,
+        "failures": 7,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.loopers.purchase.PurchaseConfigurationTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  }
+}

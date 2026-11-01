@@ -12,6 +12,8 @@ import com.loopers.domain.order.Order
 import com.loopers.domain.order.OrderStatus
 import com.loopers.domain.order.OrderRepository
 import com.loopers.domain.order.PaymentMethod
+import com.loopers.domain.order.event.OrderConfirmed
+import com.loopers.domain.order.event.PurchasedItem
 import com.loopers.domain.payment.PaymentAttempt
 import com.loopers.domain.payment.PaymentAttemptRepository
 import com.loopers.domain.payment.PaymentObservation
@@ -22,6 +24,7 @@ import com.loopers.domain.product.ProductRepository
 import com.loopers.domain.user.UserRepository
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionSynchronizationManager
@@ -72,6 +75,7 @@ class PaymentApplicationService(
     private val writes: RetryingWriteExecutor,
     private val invalidation: ProductListInvalidation,
     private val reads: PaymentReadService,
+    private val events: ApplicationEventPublisher,
 ) {
     fun confirm(userId: Long, orderId: Long, input: PaymentInput?): PaymentSnapshot {
         val prepared = try {
@@ -167,6 +171,18 @@ class PaymentApplicationService(
             reservations.save(held)
             order.finishPayment(effect == ResultEffect.SUCCESS)
             orders.savePaymentState(order)
+
+            if (effect == ResultEffect.SUCCESS) {
+                events.publishEvent(
+                    OrderConfirmed(
+                        OrderConfirmed.stableEventId(order.id),
+                        order.id,
+                        checkNotNull(order.confirmedAt).toInstant(),
+                        order.items.map { PurchasedItem(it.productId, it.quantity) },
+                        schemaVersion = 1,
+                    ),
+                )
+            }
         }
         if (observation.kind == ObservationKind.CONFLICT ||
             attempt.lastCheck in setOf("IDENTITY_MISMATCH", "TERMINAL_CONFLICT")
