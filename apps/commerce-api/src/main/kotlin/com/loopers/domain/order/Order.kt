@@ -4,6 +4,8 @@ import com.loopers.domain.commerce.CommerceException
 import com.loopers.domain.commerce.CommerceFailure
 import com.loopers.domain.commerce.EntityState
 import com.loopers.domain.product.Money
+import com.loopers.domain.order.event.OrderConfirmed
+import com.loopers.domain.order.event.PurchasedItem
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
@@ -86,6 +88,21 @@ class Order private constructor(
 
         // Match MySQL precision so reloading this fact preserves the event timestamp.
         if (success) confirmedAt = ZonedDateTime.now().truncatedTo(ChronoUnit.MICROS)
+    }
+
+    fun confirmedPurchase(): OrderConfirmed {
+        check(
+            status == OrderStatus.CONFIRMED && paymentMethod == PaymentMethod.PG &&
+            paymentResult == PaymentResult.SUCCESS && paymentAmount == totalAmount,
+        ) { "Incomplete purchase fact orderId=$id" }
+
+        return OrderConfirmed(
+            OrderConfirmed.stableEventId(id),
+            id,
+            checkNotNull(confirmedAt).toInstant(),
+            items.map { PurchasedItem(it.productId, it.quantity) },
+            1,
+        )
     }
 
     companion object {

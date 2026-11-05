@@ -39,8 +39,5 @@ class SuccessPaymentProvider : PaymentProvider {
 @TestConfiguration
 class PaymentTestConfiguration {
     @Bean @Primary
-    fun testOrderConfirmedPublisher(): com.loopers.domain.order.event.OrderConfirmedPublisher = org.mockito.kotlin.mock()
-
-    @Bean @Primary
     fun controlledPaymentProvider() = ControlledPaymentProvider()
 }

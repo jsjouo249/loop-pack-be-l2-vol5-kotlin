@@ -2,6 +2,9 @@ plugins {
     id("org.jetbrains.kotlin.plugin.jpa")
 }
 
+// Plain classes are consumed only by the API's isolated E2E test source set.
+tasks.jar { enabled = true }
+
 dependencies {
     // add-ons
     implementation(project(":modules:jpa"))
