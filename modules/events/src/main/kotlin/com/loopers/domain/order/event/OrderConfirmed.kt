@@ -41,8 +41,3 @@ data class OrderConfirmed(
         ).toString()
     }
 }
-
-interface OrderConfirmedPublisher {
-    /** Returns only after the broker acknowledges; failure does not imply the broker received nothing. */
-    fun publish(event: OrderConfirmed)
-}

@@ -46,3 +46,40 @@ tasks.register<Test>("week4Benchmark") {
     jvmArgs("-Xshare:off")
     outputs.upToDateWhen { false }
 }
+
+val outboxE2e by sourceSets.creating
+configurations[outboxE2e.implementationConfigurationName].extendsFrom(configurations.testImplementation.get())
+configurations[outboxE2e.runtimeOnlyConfigurationName].extendsFrom(configurations.testRuntimeOnly.get())
+outboxE2e.compileClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+outboxE2e.runtimeClasspath += sourceSets.main.get().output + sourceSets.test.get().output
+
+dependencies {
+    add(outboxE2e.implementationConfigurationName, project(":apps:commerce-streamer"))
+    add(outboxE2e.implementationConfigurationName, "org.testcontainers:mysql")
+}
+
+val prepareWeek6Fixture by tasks.registering(Exec::class) {
+    workingDir(rootDir)
+    commandLine("python3", "docs/week7/tooling/build-week6-fixture.py")
+    inputs.files(
+        rootProject.file("docs/week7/tooling/build-week6-fixture.py"),
+        rootProject.file("docs/week7/tooling/Week6Preparation.kt"),
+    )
+    outputs.file(layout.buildDirectory.file("week6-fixture/week6-fixture.jar"))
+}
+
+tasks.register<Test>("outboxE2e") {
+    dependsOn(tasks.testClasses, prepareWeek6Fixture)
+    testClassesDirs = outboxE2e.output.classesDirs
+    classpath = outboxE2e.runtimeClasspath
+    useJUnitPlatform()
+    maxHeapSize = "768m"
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(21)) })
+    systemProperty("spring.profiles.active", "test")
+    systemProperty("user.timezone", "Asia/Seoul")
+    systemProperty("week6.fixture.jar", layout.buildDirectory.file("week6-fixture/week6-fixture.jar").get().asFile.absolutePath)
+    systemProperty("week7.root", rootDir.absolutePath)
+    mustRunAfter(tasks.test)
+}
+
+tasks.check { dependsOn("outboxE2e") }

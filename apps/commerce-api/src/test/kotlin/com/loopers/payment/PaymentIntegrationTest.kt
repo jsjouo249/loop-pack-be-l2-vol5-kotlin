@@ -323,7 +323,7 @@ class PaymentIntegrationTest : CommerceTransactionTestSupport() {
             context.getBean(OrderRepository::class.java), context.getBean(PaymentAttemptRepository::class.java),
             context.getBean(StockReservationRepository::class.java), context.getBean(ProductRepository::class.java), context.getBean(UserRepository::class.java),
             controlled, context.getBean(RetryingWriteExecutor::class.java), context.getBean(ProductListInvalidation::class.java), context.getBean(PaymentReadService::class.java),
-            context,
+            context.getBean(com.loopers.application.outbox.OrderConfirmedOutbox::class.java),
         )
         service.confirm(user, order, com.loopers.testPaymentInput(order))
         service.reconcile(user, order)

@@ -1,0 +1,477 @@
+{
+  "date": "2026-11-05",
+  "jdk": "21.0.13",
+  "gradle": "8.13",
+  "exitCode": 0,
+  "result": "BUILD SUCCESSFUL",
+  "command": "./gradlew :apps:commerce-api:outboxE2e :modules:events:check :modules:kafka:check :apps:commerce-api:check :apps:commerce-streamer:check :apps:commerce-api:assemble :apps:commerce-streamer:assemble --console=plain --continue",
+  "totals": {
+    "tests": 223,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "modules": [
+    {
+      "module": "modules/events",
+      "task": "test",
+      "totals": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "suite": "com.loopers.domain.order.event.OrderConfirmedTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    {
+      "module": "apps/commerce-api",
+      "task": "test",
+      "totals": {
+        "tests": 201,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "suite": "com.loopers.CommerceApiContextTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.cache.ProductListCacheContractTest",
+          "tests": 11,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.cache.ProductListCacheHitTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.cache.ProductListCacheOutageTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.cache.ProductListCacheRaceTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.cache.RedisProductListCacheFailureTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "예시를 조회할 때,",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.example.ExampleFacadeIntegrationTest",
+          "tests": 0,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.outbox.OutboxRecoveryTest",
+          "tests": 6,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.outbox.OutboxRelayTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.AdministrativeConcurrencyTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.AggregateCoordinationTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.BrandDeletionHttpTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.BrandRemovalTransactionTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.LostUpdateControlTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.MySqlTransactionPolicyTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.OrderConcurrencyTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.PartialStorageTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.PointInitializationTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.RetryingWriteExecutorTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.ReviewFixRegressionTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.ReviewQueryPlanTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.SqlContractTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.application.transaction.WriteRollbackTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.architecture.ArchitectureTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.brand.BrandTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "예시 모델을 생성할 때,",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.order.OrderTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.order.PgOrderTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.outbox.OutboxMessageTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.payment.PaymentAttemptTest",
+          "tests": 5,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.point.PointAccountTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.product.ProductTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.product.StockTest",
+          "tests": 10,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.infrastructure.CommerceSchemaTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.ContractClassificationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "GET /api/v1/examples/{id}",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.ExampleV1ApiE2ETest",
+          "tests": 0,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.admin.AdminCommerceMockMvcTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.like.ProductLikeMockMvcTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.order.OrderMockMvcTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.point.PointMockMvcTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.api.product.CustomerBrowseMockMvcTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.payment.KafkaOutboxSenderTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.payment.OutboxAtomicityTest",
+          "tests": 9,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.payment.OutboxDeliveryIntegrationTest",
+          "tests": 4,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.payment.PaymentIntegrationTest",
+          "tests": 21,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.payment.PaymentProviderContractTest",
+          "tests": 8,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.payment.PointPaymentMigrationTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.support.error.CoreExceptionTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    {
+      "module": "apps/commerce-streamer",
+      "task": "test",
+      "totals": {
+        "tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "suite": "com.loopers.architecture.ArchitectureTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.domain.purchase.PurchaseReceiptTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.interfaces.consumer.PurchaseActivityConsumerTest",
+          "tests": 3,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.kafka.KafkaAssignmentExperimentTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.kafka.PurchaseListenerFailureExperimentTest",
+          "tests": 1,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.purchase.PurchaseActivityIntegrationTest",
+          "tests": 7,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "com.loopers.purchase.PurchaseConfigurationTest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    {
+      "module": "apps/commerce-api",
+      "task": "outboxE2e",
+      "totals": {
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "suites": [
+        {
+          "suite": "com.loopers.week7.OutboxDeliveryE2ETest",
+          "tests": 2,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      ]
+    }
+  ]
+}
