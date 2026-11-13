@@ -22,6 +22,9 @@ enum class CommerceFailure(val message: String) {
     ORDER_NOT_FOUND("주문을 찾을 수 없습니다."),
     ORDER_NOT_OWNED("다른 사용자의 주문입니다."),
     ORDER_ALREADY_CONFIRMED("이미 확정된 주문입니다."),
+    COUPON_CAMPAIGN_NOT_FOUND("쿠폰 캠페인을 찾을 수 없습니다."),
+    COUPON_SOLD_OUT("쿠폰이 모두 발급되었습니다."),
+    COUPON_CAMPAIGN_INACTIVE("쿠폰 발급이 종료된 캠페인입니다."),
 }
 
 class CommerceException(val reason: CommerceFailure) : RuntimeException(reason.message)
