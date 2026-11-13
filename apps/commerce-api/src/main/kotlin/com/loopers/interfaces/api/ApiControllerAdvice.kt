@@ -1,6 +1,8 @@
 package com.loopers.interfaces.api
 
 import com.loopers.application.transaction.TransactionBusyException
+import com.loopers.domain.coupon.CouponAdmissionException
+import com.loopers.domain.coupon.CouponAdmissionFailure
 import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
@@ -32,6 +34,20 @@ class ApiControllerAdvice {
     private val log = LoggerFactory.getLogger(ApiControllerAdvice::class.java)
 
     @ExceptionHandler
+    fun handle(e: CouponAdmissionException): ResponseEntity<ApiResponse<*>> {
+        val full = e.reason == CouponAdmissionFailure.FULL
+        val (code, message) = when (e.reason) {
+            CouponAdmissionFailure.FULL -> "COUPON_ADMISSION_FULL" to "발급 대기가 초과되었습니다. 잠시 후 다시 시도해 주세요."
+            CouponAdmissionFailure.UNAVAILABLE -> "COUPON_ADMISSION_UNAVAILABLE" to "신규 쿠폰 발급을 일시 중단했습니다."
+            CouponAdmissionFailure.CANCELLED -> "COUPON_ADMISSION_CANCELLED" to "발급 요청 대기가 중단되었습니다."
+        }
+
+        return ResponseEntity.status(if (full) HttpStatus.TOO_MANY_REQUESTS else HttpStatus.SERVICE_UNAVAILABLE)
+            .header("Retry-After", "1")
+            .body(ApiResponse.fail(code, message))
+    }
+
+    @ExceptionHandler
     fun handle(e: ExampleException): ResponseEntity<ApiResponse<*>> = failureResponse(
         when (e.reason) {
             ExampleFailure.INVALID_INPUT -> ErrorType.BAD_REQUEST
@@ -58,11 +74,14 @@ class ApiControllerAdvice {
             CommerceFailure.POINT_BALANCE_OVERFLOW,
             CommerceFailure.INSUFFICIENT_POINTS,
             CommerceFailure.ORDER_ALREADY_CONFIRMED,
+            CommerceFailure.COUPON_SOLD_OUT,
+            CommerceFailure.COUPON_CAMPAIGN_INACTIVE,
             -> HttpStatus.CONFLICT
             CommerceFailure.BRAND_NOT_FOUND,
             CommerceFailure.PRODUCT_NOT_FOUND,
             CommerceFailure.USER_NOT_FOUND,
             CommerceFailure.ORDER_NOT_FOUND,
+            CommerceFailure.COUPON_CAMPAIGN_NOT_FOUND,
             -> HttpStatus.NOT_FOUND
             CommerceFailure.BRAND_HAS_ACTIVE_PRODUCTS -> HttpStatus.CONFLICT
             else -> HttpStatus.BAD_REQUEST
