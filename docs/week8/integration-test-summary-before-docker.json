@@ -1,0 +1,30 @@
+[
+  {
+    "name": "com.loopers.coupon.CouponIntegrationTest",
+    "tests": 10,
+    "failures": 10,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "com.loopers.coupon.CouponIssueQuotaIntegrationTest",
+    "tests": 1,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "com.loopers.coupon.CouponRedisFailureTest",
+    "tests": 1,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "com.loopers.coupon.RedisCouponPermitsIntegrationTest",
+    "tests": 1,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+  }
+]
