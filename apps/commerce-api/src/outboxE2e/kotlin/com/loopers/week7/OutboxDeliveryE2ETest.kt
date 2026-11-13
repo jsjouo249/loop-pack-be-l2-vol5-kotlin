@@ -271,6 +271,7 @@ class OutboxDeliveryE2ETest {
         }
     }
 
+    /** W6 주문 확정·소비 사실을 보존한 DB에 현재 앱의 추가 DDL만 적용하고, PG 추가 호출 없이 Outbox 복구·재복구 결과를 대조한다. */
     @Test
     fun `actual W6 revision prepares missing and consumed orders then W7 restores without PG calls`() {
         val purchaseContext = SpringApplicationBuilder(PurchaseOnlyConfiguration::class.java).web(WebApplicationType.NONE)
@@ -319,7 +320,11 @@ class OutboxDeliveryE2ETest {
         listeners.clear()
         purchaseContext.close()
         contexts.remove(purchaseContext)
-        dataSource.connection.use { ScriptUtils.executeSqlScript(it, FileSystemResource(root.resolve("docs/week7/sql/create-order-outbox.sql"))) }
+        dataSource.connection.use {
+            ScriptUtils.executeSqlScript(it, FileSystemResource(root.resolve("docs/week7/sql/create-order-outbox.sql")))
+            // 현재 앱의 schema validation을 위해 신규 쿠폰 테이블도 준비하되 기존 주문·결제·활동 데이터는 유지한다.
+            ScriptUtils.executeSqlScript(it, FileSystemResource(root.resolve("docs/week8/schema.sql")))
+        }
 
         val context = startApi("validate")
         consumer(context)
