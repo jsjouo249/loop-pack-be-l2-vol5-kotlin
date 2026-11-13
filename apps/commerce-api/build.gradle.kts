@@ -32,8 +32,8 @@ dependencies {
     testImplementation(testFixtures(project(":modules:redis")))
 }
 
-// Performance measurements are explicit runs, separate from deterministic regression checks.
-tasks.test { useJUnitPlatform { excludeTags("performance") } }
+// Performance measurements and installed-Redis tests run through separate explicit tasks.
+tasks.test { useJUnitPlatform { excludeTags("performance", "local-redis") } }
 
 tasks.register<Test>("week4Benchmark") {
     testClassesDirs = sourceSets.test.get().output.classesDirs
@@ -83,3 +83,12 @@ tasks.register<Test>("outboxE2e") {
 }
 
 tasks.check { dependsOn("outboxE2e") }
+
+// Installed redis-server is optional; this explicit suite owns its processes and temporary AOF data.
+tasks.register<Test>("couponRedisLocalTest") {
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform { includeTags("local-redis") }
+    systemProperty("spring.profiles.active", "test")
+    outputs.upToDateWhen { false }
+}
